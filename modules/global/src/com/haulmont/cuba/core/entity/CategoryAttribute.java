@@ -19,6 +19,7 @@ package com.haulmont.cuba.core.entity;
 
 import com.google.common.base.Preconditions;
 import com.haulmont.bali.util.ReflectionHelper;
+import com.haulmont.chile.core.annotations.MetaProperty;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.app.dynamicattributes.PropertyType;
 import com.haulmont.cuba.core.entity.annotation.EmbeddedParameters;
@@ -36,7 +37,7 @@ import java.util.*;
 
 @Entity(name = "sys$CategoryAttribute")
 @Table(name = "SYS_CATEGORY_ATTR")
-@NamePattern("%s|name")
+@NamePattern("%s|localeName")
 @SystemLevel
 @Listeners("report_CategoryAttributeListener")
 public class CategoryAttribute extends StandardEntity {
@@ -128,6 +129,13 @@ public class CategoryAttribute extends StandardEntity {
 
     @Column(name = "FILTER_XML")
     protected String filterXml;
+
+    @Column(name = "LOCALE_NAMES")
+    private String localeNames;
+
+    @Transient
+    @MetaProperty
+    private String localeName;
 
     @PostConstruct
     public void init() {
@@ -387,5 +395,23 @@ public class CategoryAttribute extends StandardEntity {
         } else {
             return null;
         }
+    }
+
+    public String getLocaleNames() {
+        return localeNames;
+    }
+
+    public void setLocaleNames(String localeNames) {
+        this.localeNames = localeNames;
+    }
+
+    @MetaProperty
+    public String getLocaleName(){
+        if (localeName == null) {
+            localeName = LocaleHelper.getLocalizedName(localeNames);
+            if (localeName == null)
+                localeName = name;
+        }
+        return localeName;
     }
 }
