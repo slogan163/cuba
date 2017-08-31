@@ -16,7 +16,7 @@
   -->
 
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
-        class="com.haulmont.cuba.gui.app.core.categories.AttributeEditorLocFrame"
+        class="com.haulmont.cuba.gui.app.core.categories.LocalizedNameFrame"
         messagesPack="com.haulmont.cuba.gui.app.core.categories">
     <layout>
         <scrollBox height="100%"

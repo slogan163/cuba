@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.haulmont.bali.util.Dom4j;
-import com.haulmont.bali.util.ParamsMap;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.cuba.core.app.dynamicattributes.PropertyType;
 import com.haulmont.cuba.core.entity.CategoryAttribute;
@@ -33,8 +32,6 @@ import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.entity.HasUuid;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.core.global.filter.SecurityJpqlGenerator;
-import com.haulmont.cuba.gui.FrameContext;
-import com.haulmont.cuba.gui.FrameContextImpl;
 import com.haulmont.cuba.gui.ScreensHelper;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
@@ -158,7 +155,7 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
     protected Table targetScreensTable;
 
     @Inject
-    private AttributeEditorLocFrame localizedFrame;
+    private LocalizedNameFrame localizedFrame;
 
     @Inject
     protected CollectionDatasource<ScreenAndComponent, UUID> screensDs;

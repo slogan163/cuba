@@ -24,7 +24,7 @@ import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import javax.inject.Inject;
 import java.util.*;
 
-public class AttributeEditorLocFrame extends AbstractFrame {
+public class LocalizedNameFrame extends AbstractFrame {
 
     @Inject
     protected VBoxLayout localesVBox;
