@@ -725,6 +725,7 @@ create table SYS_CATEGORY (
     ENTITY_TYPE varchar(100) not null,
     IS_DEFAULT boolean,
     DISCRIMINATOR integer,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID)
 )^
