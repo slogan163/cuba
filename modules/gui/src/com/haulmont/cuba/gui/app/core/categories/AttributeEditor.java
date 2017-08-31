@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.haulmont.bali.util.Dom4j;
+import com.haulmont.bali.util.ParamsMap;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.cuba.core.app.dynamicattributes.PropertyType;
 import com.haulmont.cuba.core.entity.CategoryAttribute;
@@ -32,6 +33,8 @@ import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.entity.HasUuid;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.core.global.filter.SecurityJpqlGenerator;
+import com.haulmont.cuba.gui.FrameContext;
+import com.haulmont.cuba.gui.FrameContextImpl;
 import com.haulmont.cuba.gui.ScreensHelper;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
@@ -63,7 +66,7 @@ import java.util.*;
 import static java.lang.String.format;
 
 /**
- * Class that encapsulates editing of {@link com.haulmont.cuba.core.entity.CategoryAttribute} entities.
+ * Class that encapsulates editing of {@link CategoryAttribute} entities.
  * <p>
  */
 public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
@@ -153,6 +156,9 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
 
     @Inject
     protected Table targetScreensTable;
+
+    @Inject
+    private AttributeEditorLocFrame localizedFrame;
 
     @Inject
     protected CollectionDatasource<ScreenAndComponent, UUID> screensDs;
@@ -498,6 +504,9 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
         attribute.setTargetScreens(stringBuilder.toString());
+
+        attribute.setLocaleNames(localizedFrame.getValue());
+
         return true;
     }
 
@@ -565,6 +574,8 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
             Iterable<String> items = Splitter.on(",").omitEmptyStrings().split(enumeration);
             enumerationListEditor.setValue(Lists.newArrayList(items));
         }
+
+        localizedFrame.setValue(attribute.getLocaleNames());
 
         setupVisibility();
     }

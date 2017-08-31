@@ -53,4 +53,27 @@ public final class LocaleHelper {
         }
         return localeName;
     }
+
+    public static String getLocalizedNameByKey(Locale locale, String localeBundle){
+        String localeName = null;
+        if (StringUtils.isNotEmpty(localeBundle)) {
+            // find locale name
+            StringReader reader = new StringReader(localeBundle);
+            Properties localeProperties = new Properties();
+            boolean localeLoaded = false;
+            try {
+                localeProperties.load(reader);
+                localeLoaded = true;
+            } catch (IOException ignored) {
+            }
+            if (localeLoaded) {
+                String key = locale.getLanguage();
+                if (StringUtils.isNotEmpty(locale.getCountry()))
+                    key += "_" + locale.getCountry();
+                if (localeProperties.containsKey(key))
+                    localeName = (String) localeProperties.get(key);
+            }
+        }
+        return localeName;
+    }
 }
