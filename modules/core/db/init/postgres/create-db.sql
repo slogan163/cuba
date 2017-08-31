@@ -771,8 +771,8 @@ create table SYS_CATEGORY_ATTR (
     IS_COLLECTION boolean,
     JOIN_CLAUSE varchar(4000),
     WHERE_CLAUSE varchar(4000),
-    LOCALE_NAMES varchar(1000),
     FILTER_XML text,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID),
     constraint SYS_CATEGORY_ATTR_CATEGORY_ID foreign key (CATEGORY_ID) references SYS_CATEGORY(ID)

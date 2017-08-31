@@ -708,6 +708,7 @@ create table SYS_CATEGORY(
     ENTITY_TYPE varchar(100) not null,
     IS_DEFAULT boolean,
     DISCRIMINATOR integer,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID)
 )^
@@ -752,6 +753,7 @@ create table SYS_CATEGORY_ATTR(
     JOIN_CLAUSE varchar(4000),
     WHERE_CLAUSE varchar(4000),
     FILTER_XML longvarchar,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID)
 )^
