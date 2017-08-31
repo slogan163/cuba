@@ -40,6 +40,9 @@
                          requiredMessage="msg://entityTypeRequired"/>
             <checkBox id="isDefault" caption="msg://isDefault" align="MIDDLE_LEFT"/>
         </hbox>
+        <groupBox width="300px" collapsable="true" collapsed="true" caption="msg://localeGroupBox.caption">
+            <frame id="localizedFrame" screen="localizedNameFrame" height="100%" width="100%"/>
+        </groupBox>
         <label value="msg://attributes" stylename="h2"/>
 
         <frame id="categoryAttrsFrame" src="/com/haulmont/cuba/gui/app/core/categories/category-attrs-frame.xml"/>
