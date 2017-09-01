@@ -41,6 +41,8 @@ import com.haulmont.cuba.security.entity.*;
 import com.haulmont.cuba.security.global.UserSession;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -107,6 +109,8 @@ public class UserEditor extends AbstractEditor<User> {
 
     @WindowParam(name = "initCopy")
     protected Boolean initCopy;
+
+    protected Log log = LogFactory.getLog(getClass());
 
     public interface Companion {
         void initPasswordField(PasswordField passwordField);
@@ -181,6 +185,16 @@ public class UserEditor extends AbstractEditor<User> {
                     }
                 }
             }
+        });
+
+        addBeforeCloseWithShortcutListener(event -> {
+            log.info("BeforeCloseWithShortcutListener");
+            event.preventWindowClose();
+        });
+
+        addBeforeCloseWithCloseButtonListener(event -> {
+            log.info("BeforeCloseWithCloseButtonListener");
+            event.preventWindowClose();
         });
     }
 

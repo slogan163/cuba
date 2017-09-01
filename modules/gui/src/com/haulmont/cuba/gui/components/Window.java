@@ -30,6 +30,7 @@ import com.haulmont.cuba.gui.settings.Settings;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.List;
 
 /**
@@ -459,6 +460,53 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
          */
         void windowClosedWithCommitAction();
     }
+
+    class PreCloseEvent extends EventObject {
+        protected boolean closePrevented = false;
+
+        public PreCloseEvent(Window source) {
+            super(source);
+        }
+
+        @Override
+        public Window getSource() {
+            return (Window) super.getSource();
+        }
+
+        public void preventWindowClose() {
+            this.closePrevented = true;
+        }
+
+        public boolean isClosePrevented() {
+            return closePrevented;
+        }
+    }
+
+    interface BeforeCloseWithShortcutListener {
+        void beforeCloseWithShortcut(PreCloseWithShortcutEvent event);
+    }
+
+    class PreCloseWithShortcutEvent extends PreCloseEvent {
+        public PreCloseWithShortcutEvent(Window source) {
+            super(source);
+        }
+    }
+
+    void addBeforeCloseWithShortcutListener(BeforeCloseWithShortcutListener listener);
+    void removeBeforeCloseWithShortcutListener(BeforeCloseWithShortcutListener listener);
+
+    interface BeforeCloseWithCloseButtonListener {
+        void beforeCloseWithCloseButton(PreCloseWithCloseButtonEvent event);
+    }
+
+    class PreCloseWithCloseButtonEvent extends PreCloseEvent {
+        public PreCloseWithCloseButtonEvent(Window source) {
+            super(source);
+        }
+    }
+
+    void addBeforeCloseWithCloseButtonListener(BeforeCloseWithCloseButtonListener listener);
+    void removeBeforeCloseWithCloseButtonListener(BeforeCloseWithCloseButtonListener listener);
 
     /**
      * INTERNAL.
