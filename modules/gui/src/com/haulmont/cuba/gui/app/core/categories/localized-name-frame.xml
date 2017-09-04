@@ -20,8 +20,8 @@
         messagesPack="com.haulmont.cuba.gui.app.core.categories">
     <layout>
         <scrollBox id="localesScrollBox"
-                   height="100%"
                    spacing="true"
+                   stylename="maxSize"
                    width="100%">
         </scrollBox>
     </layout>

@@ -155,7 +155,7 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
     protected Table targetScreensTable;
 
     @Inject
-    private LocalizedNameFrame localizedFrame;
+    protected LocalizedNameFrame localizedFrame;
 
     @Inject
     protected CollectionDatasource<ScreenAndComponent, UUID> screensDs;

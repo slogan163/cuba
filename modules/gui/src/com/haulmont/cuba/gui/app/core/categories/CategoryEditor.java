@@ -39,7 +39,7 @@ public class CategoryEditor extends AbstractEditor<Category> {
     @Inject
     protected MessageTools messageTools;
     @Inject
-    private LocalizedNameFrame localizedFrame;
+    protected LocalizedNameFrame localizedFrame;
 
     @Inject
     protected LookupField entityType;
