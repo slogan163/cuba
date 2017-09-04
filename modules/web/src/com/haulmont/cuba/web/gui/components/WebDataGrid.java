@@ -132,6 +132,7 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
     protected com.vaadin.event.SortEvent.SortListener sortListener;
     protected com.vaadin.event.ContextClickEvent.ContextClickListener contextClickListener;
     protected CubaGrid.EditorCloseListener editorCloseListener;
+    protected CubaGrid.EditorOpenListener editorOpenListener;
     protected CubaGrid.EditorPreCommitListener editorPreCommitListener;
     protected CubaGrid.EditorPostCommitListener editorPostCommitListener;
 
@@ -987,6 +988,39 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
     }
 
     @Override
+    public void addEditorOpenListener(EditorOpenListener listener) {
+        getEventRouter().addListener(EditorOpenListener.class, listener);
+
+        if (editorOpenListener == null) {
+            editorOpenListener = event -> {
+                Map<String, Field> fields = new HashMap<>();
+                event.getColumnFieldMap().keySet().forEach(gridColumn -> {
+                    Column column = getColumnByGridColumn(gridColumn);
+                    if (column != null) {
+                        DataGridEditorCustomField customField =
+                                (DataGridEditorCustomField) event.getColumnFieldMap().get(gridColumn);
+                        fields.put(column.getId(), customField.getField());
+                    }
+                });
+
+                EditorOpenEvent e = new EditorOpenEvent(WebDataGrid.this, event.getItem(), fields);
+                getEventRouter().fireEvent(EditorOpenListener.class, EditorOpenListener::beforeEditorOpened, e);
+            };
+            component.addEditorOpenListener(editorOpenListener);
+        }
+    }
+
+    @Override
+    public void removeEditorOpenListener(EditorOpenListener listener) {
+        getEventRouter().removeListener(EditorOpenListener.class, listener);
+
+        if (!getEventRouter().hasListeners(EditorOpenListener.class)) {
+            component.removeEditorOpenListener(editorOpenListener);
+            editorOpenListener = null;
+        }
+    }
+
+    @Override
     public void addEditorCloseListener(EditorCloseListener listener) {
         getEventRouter().addListener(EditorCloseListener.class, listener);
 
@@ -1094,102 +1128,7 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
 
             AbstractField<?> content = (AbstractField<?>) WebComponentsHelper.getComposition(columnComponent);
 
-            CustomField wrapper = new CustomField() {
-                @Override
-                protected com.vaadin.ui.Component initContent() {
-                    return content;
-                }
-
-                @Override
-                protected AbstractField<?> getContent() {
-                    return (AbstractField<?>) super.getContent();
-                }
-
-                @Override
-                public Class getType() {
-                    return Object.class;
-                }
-
-                @Override
-                protected void setInternalValue(Object newValue) {
-                    columnComponent.setValue(newValue);
-                }
-
-                @Override
-                protected Object getInternalValue() {
-                    return columnComponent.getValue();
-                }
-
-                @Override
-                public ErrorMessage getErrorMessage() {
-                    try {
-                        validate();
-                    } catch (Validator.InvalidValueException ignore) {
-                    }
-                    return getContent().getErrorMessage();
-                }
-
-                @Override
-                public boolean isBuffered() {
-                    return ((Buffered) columnComponent).isBuffered();
-                }
-
-                @Override
-                public void setBuffered(boolean buffered) {
-                    ((Buffered) columnComponent).setBuffered(buffered);
-                }
-
-                @Override
-                public void commit() throws SourceException, Validator.InvalidValueException {
-                    validate();
-                    ((Buffered) columnComponent).commit();
-                }
-
-                @Override
-                public void validate() throws Validator.InvalidValueException {
-                    try {
-                        columnComponent.validate();
-                    } catch (ValidationException e) {
-                        throw new Validator.InvalidValueException(e.getDetailsMessage());
-                    }
-                }
-
-                @Override
-                public void discard() throws SourceException {
-                    ((Buffered) columnComponent).discard();
-                }
-
-                @Override
-                public boolean isModified() {
-                    return ((Buffered) columnComponent).isModified();
-                }
-
-                @Override
-                public void setWidth(float width, Unit unit) {
-                    super.setWidth(width, unit);
-
-                    if (getContent() != null) {
-                        if (width < 0) {
-                            getContent().setWidthUndefined();
-                        } else {
-                            getContent().setWidth(100, Unit.PERCENTAGE);
-                        }
-                    }
-                }
-
-                @Override
-                public void setHeight(float height, Unit unit) {
-                    super.setHeight(height, unit);
-
-                    if (getContent() != null) {
-                        if (height < 0) {
-                            getContent().setHeightUndefined();
-                        } else {
-                            getContent().setHeight(100, Unit.PERCENTAGE);
-                        }
-                    }
-                }
-            };
+            CustomField wrapper = new DataGridEditorCustomField(columnComponent);
             //noinspection unchecked
             wrapper.setConverter(new ObjectToObjectConverter());
             wrapper.setFocusDelegate(content);
@@ -1201,6 +1140,116 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
             columnComponent.addValueChangeListener(event -> wrapper.markAsDirty());
 
             return wrapper;
+        }
+    }
+
+    protected static class DataGridEditorCustomField extends CustomField {
+
+        protected Field columnComponent;
+        protected AbstractField<?> content;
+
+        public DataGridEditorCustomField(Field columnComponent) {
+            this.columnComponent = columnComponent;
+            content = (AbstractField<?>) WebComponentsHelper.getComposition(columnComponent);
+        }
+
+        @Override
+        protected com.vaadin.ui.Component initContent() {
+            return content;
+        }
+
+        @Override
+        protected AbstractField<?> getContent() {
+            return (AbstractField<?>) super.getContent();
+        }
+
+        protected Field getField() {
+            return columnComponent;
+        }
+
+        @Override
+        public Class getType() {
+            return Object.class;
+        }
+
+        @Override
+        protected void setInternalValue(Object newValue) {
+            columnComponent.setValue(newValue);
+        }
+
+        @Override
+        protected Object getInternalValue() {
+            return columnComponent.getValue();
+        }
+
+        @Override
+        public ErrorMessage getErrorMessage() {
+            try {
+                validate();
+            } catch (Validator.InvalidValueException ignore) {
+            }
+            return getContent().getErrorMessage();
+        }
+
+        @Override
+        public boolean isBuffered() {
+            return ((Buffered) columnComponent).isBuffered();
+        }
+
+        @Override
+        public void setBuffered(boolean buffered) {
+            ((Buffered) columnComponent).setBuffered(buffered);
+        }
+
+        @Override
+        public void commit() throws SourceException, Validator.InvalidValueException {
+            validate();
+            ((Buffered) columnComponent).commit();
+        }
+
+        @Override
+        public void validate() throws Validator.InvalidValueException {
+            try {
+                columnComponent.validate();
+            } catch (ValidationException e) {
+                throw new Validator.InvalidValueException(e.getDetailsMessage());
+            }
+        }
+
+        @Override
+        public void discard() throws SourceException {
+            ((Buffered) columnComponent).discard();
+        }
+
+        @Override
+        public boolean isModified() {
+            return ((Buffered) columnComponent).isModified();
+        }
+
+        @Override
+        public void setWidth(float width, Unit unit) {
+            super.setWidth(width, unit);
+
+            if (getContent() != null) {
+                if (width < 0) {
+                    getContent().setWidthUndefined();
+                } else {
+                    getContent().setWidth(100, Unit.PERCENTAGE);
+                }
+            }
+        }
+
+        @Override
+        public void setHeight(float height, Unit unit) {
+            super.setHeight(height, unit);
+
+            if (getContent() != null) {
+                if (height < 0) {
+                    getContent().setHeightUndefined();
+                } else {
+                    getContent().setHeight(100, Unit.PERCENTAGE);
+                }
+            }
         }
     }
 
