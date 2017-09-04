@@ -16,6 +16,7 @@
  */
 package com.haulmont.cuba.gui.components;
 
+import com.haulmont.cuba.client.ClientConfig;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.validation.groups.UiCrossFieldChecks;
 import com.haulmont.cuba.gui.DialogOptions;
@@ -464,6 +465,9 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
     class PreCloseEvent extends EventObject {
         protected boolean closePrevented = false;
 
+        /**
+         * @param source the window to be closed
+         */
         public PreCloseEvent(Window source) {
             super(source);
         }
@@ -482,30 +486,84 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
         }
     }
 
+    /**
+     * Listener to be notified when a screen is closed with {@link ClientConfig#getCloseShortcut()}.
+     */
     interface BeforeCloseWithShortcutListener {
+        /**
+         * Called when a screen is closed with {@link ClientConfig#getCloseShortcut()}.
+         *
+         * @param event an event providing more information
+         */
         void beforeCloseWithShortcut(PreCloseWithShortcutEvent event);
     }
 
+
+    /**
+     * An event that is fired before a screen is closed with {@link ClientConfig#getCloseShortcut()}.
+     */
     class PreCloseWithShortcutEvent extends PreCloseEvent {
+        /**
+         * @param source the window to be closed
+         */
         public PreCloseWithShortcutEvent(Window source) {
             super(source);
         }
     }
 
+    /**
+     * Register a new before close with shortcut listener.
+     *
+     * @param listener the listener to register
+     */
     void addBeforeCloseWithShortcutListener(BeforeCloseWithShortcutListener listener);
+
+    /**
+     * Removes a previously registered before close with shortcut listener.
+     *
+     * @param listener the listener to remove
+     */
     void removeBeforeCloseWithShortcutListener(BeforeCloseWithShortcutListener listener);
 
+    /**
+     * Listener to be notified when a screen is closed with one of the following approaches:
+     * screen's close button, bread crumbs, TabSheet tabs' close actions (Close, Close All, Close Others).
+     */
     interface BeforeCloseWithCloseButtonListener {
+        /**
+         * Called when a screen is closed with one of the following approaches:
+         * screen's close button, bread crumbs, TabSheet tabs' close actions (Close, Close All, Close Others).
+         *
+         * @param event an event providing more information
+         */
         void beforeCloseWithCloseButton(PreCloseWithCloseButtonEvent event);
     }
 
+    /**
+     * An event that is fired before a screen is closed with one of the following approaches:
+     * screen's close button, bread crumbs, TabSheet tabs' close actions (Close, Close All, Close Others).
+     */
     class PreCloseWithCloseButtonEvent extends PreCloseEvent {
+        /**
+         * @param source the window to be closed
+         */
         public PreCloseWithCloseButtonEvent(Window source) {
             super(source);
         }
     }
 
+    /**
+     * Register a new before close with close button listener.
+     *
+     * @param listener the listener to register
+     */
     void addBeforeCloseWithCloseButtonListener(BeforeCloseWithCloseButtonListener listener);
+
+    /**
+     * Removes a previously registered before close with close button listener.
+     *
+     * @param listener the listener to remove
+     */
     void removeBeforeCloseWithCloseButtonListener(BeforeCloseWithCloseButtonListener listener);
 
     /**
