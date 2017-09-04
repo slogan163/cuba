@@ -22,8 +22,6 @@ import com.haulmont.cuba.core.global.BuildInfo;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -39,8 +37,6 @@ public class AboutWindow extends AbstractWindow {
     @Inject
     protected Messages messages;
 
-    protected Log log = LogFactory.getLog(getClass());
-
     @Override
     public void init(Map<String, Object> params) {
         BuildInfo.Content content = buildInfo.getContent();
@@ -53,16 +49,6 @@ public class AboutWindow extends AbstractWindow {
             entity.setValue("value", entry.getValue());
             buildInfoDs.includeItem(entity);
         }
-
-        addBeforeCloseWithShortcutListener(event -> {
-            log.info("BeforeCloseWithShortcutListener");
-            event.preventWindowClose();
-        });
-
-        addBeforeCloseWithCloseButtonListener(event -> {
-            log.info("BeforeCloseWithCloseButtonListener");
-            event.preventWindowClose();
-        });
     }
 
     public void close() {

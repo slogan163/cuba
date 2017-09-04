@@ -36,8 +36,6 @@ import com.haulmont.cuba.security.app.UserManagementService;
 import com.haulmont.cuba.security.entity.*;
 import com.haulmont.cuba.security.global.UserSession;
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,8 +88,6 @@ public class UserBrowser extends AbstractLookup {
 
     @Inject
     protected ComponentsFactory componentsFactory;
-
-    protected Log log = LogFactory.getLog(getClass());
 
     public interface Companion {
         void refreshUserSubstitutions();
@@ -178,16 +174,6 @@ public class UserBrowser extends AbstractLookup {
         }
 
         initTimeZoneColumn();
-
-        addBeforeCloseWithShortcutListener(event -> {
-            log.info("BeforeCloseWithShortcutListener");
-            event.preventWindowClose();
-        });
-
-        addBeforeCloseWithCloseButtonListener(event -> {
-            log.info("BeforeCloseWithCloseButtonListener");
-            event.preventWindowClose();
-        });
     }
 
     protected void initTimeZoneColumn() {
