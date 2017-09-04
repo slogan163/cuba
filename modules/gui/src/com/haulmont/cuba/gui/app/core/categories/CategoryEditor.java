@@ -108,6 +108,6 @@ public class CategoryEditor extends AbstractEditor<Category> {
     @Override
     protected boolean preCommit() {
         category.setLocaleNames(localizedFrame.getValue());
-        return true;
+        return super.preCommit();
     }
 }

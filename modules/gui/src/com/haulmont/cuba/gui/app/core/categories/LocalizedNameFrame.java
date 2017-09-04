@@ -27,13 +27,13 @@ import java.util.*;
 public class LocalizedNameFrame extends AbstractFrame {
 
     @Inject
-    protected VBoxLayout localesVBox;
+    protected ScrollBoxLayout localesScrollBox;
 
     @Inject
     protected ComponentsFactory factory;
 
     @Inject
-    private GlobalConfig globalConfig;
+    protected GlobalConfig globalConfig;
 
     protected Map<Locale, TextField> textFieldMap;
 
@@ -42,15 +42,14 @@ public class LocalizedNameFrame extends AbstractFrame {
         textFieldMap = new HashMap<>();
         Map<String, Locale> map = globalConfig.getAvailableLocales();
         for (Map.Entry<String, Locale> entry : map.entrySet()) {
-            localesVBox.add(createLocaleListComponent(entry.getValue(), entry.getKey()));
+            localesScrollBox.add(createLocaleListComponent(entry.getValue(), entry.getKey()));
         }
     }
 
     protected Component createLocaleListComponent(Locale locale, String key) {
         TextField valueField = factory.createComponent(TextField.class);
-        valueField.setId("value");
         valueField.setWidth("100%");
-        valueField.setCaption(key + "|" + messages.getTools().localeToString(locale));
+        valueField.setCaption(key + "|" + locale.toString());
 
         textFieldMap.put(locale, valueField);
 
@@ -69,9 +68,18 @@ public class LocalizedNameFrame extends AbstractFrame {
     }
 
     public void setValue(String localeBundle) {
-        for (Map.Entry<Locale, TextField> entry : textFieldMap.entrySet()) {
-            String localizedName = LocaleHelper.getLocalizedNameByKey(entry.getKey(), localeBundle);
-            entry.getValue().setValue(localizedName);
+        if (localeBundle == null) {
+            return;
+        }
+
+        Map<String, String> localizedNamesMap = LocaleHelper.getLocalizedNames(localeBundle);
+        for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
+            for (Map.Entry<String, String> locEntry : localizedNamesMap.entrySet()) {
+                if (textFieldEntry.getKey().toString().equals(locEntry.getKey())) {
+                    textFieldEntry.getValue().setValue(locEntry.getValue());
+                    break;
+                }
+            }
         }
     }
 }

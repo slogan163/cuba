@@ -17,13 +17,13 @@
 package com.haulmont.cuba.core.entity;
 
 import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.core.global.QueryUtils;
 import com.haulmont.cuba.core.global.UserSessionSource;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 public final class LocaleHelper {
 
@@ -31,6 +31,7 @@ public final class LocaleHelper {
     }
 
     public static String getLocalizedName(String localeBundle) {
+        localeBundle = QueryUtils.escapeForLike(localeBundle);
         Locale locale = AppBeans.get(UserSessionSource.class).getLocale();
         String localeName = null;
         if (StringUtils.isNotEmpty(localeBundle)) {
@@ -54,10 +55,9 @@ public final class LocaleHelper {
         return localeName;
     }
 
-    public static String getLocalizedNameByKey(Locale locale, String localeBundle){
-        String localeName = null;
+    public static Map<String, String> getLocalizedNames(String localeBundle) {
+        localeBundle = QueryUtils.escapeForLike(localeBundle);
         if (StringUtils.isNotEmpty(localeBundle)) {
-            // find locale name
             StringReader reader = new StringReader(localeBundle);
             Properties localeProperties = new Properties();
             boolean localeLoaded = false;
@@ -67,13 +67,13 @@ public final class LocaleHelper {
             } catch (IOException ignored) {
             }
             if (localeLoaded) {
-                String key = locale.getLanguage();
-                if (StringUtils.isNotEmpty(locale.getCountry()))
-                    key += "_" + locale.getCountry();
-                if (localeProperties.containsKey(key))
-                    localeName = (String) localeProperties.get(key);
+                Map<String, String> map = new HashMap<>();
+                for (Map.Entry<Object, Object> entry : localeProperties.entrySet()) {
+                    map.put(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+                }
+                return map;
             }
         }
-        return localeName;
+        return Collections.emptyMap();
     }
 }
