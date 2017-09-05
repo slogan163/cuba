@@ -761,6 +761,7 @@ create table SYS_CATEGORY(
     ENTITY_TYPE varchar(100) not null,
     IS_DEFAULT boolean,
     DISCRIMINATOR integer,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID)
 )^
@@ -813,6 +814,7 @@ create table SYS_CATEGORY_ATTR (
     JOIN_CLAUSE text,
     WHERE_CLAUSE text,
     FILTER_XML longtext,
+    LOCALE_NAMES varchar(1000),
     --
     primary key (ID),
     constraint SYS_CATEGORY_ATTR_CATEGORY_ID foreign key (CATEGORY_ID) references SYS_CATEGORY(ID)
