@@ -22,7 +22,10 @@ import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class LocalizedNameFrame extends AbstractFrame {
 
@@ -57,14 +60,28 @@ public class LocalizedNameFrame extends AbstractFrame {
     }
 
     public String getValue() {
-        StringBuilder sb = new StringBuilder();
+        Properties properties = new Properties();
         for (Map.Entry<Locale, TextField> entry : textFieldMap.entrySet()) {
             if (!entry.getValue().getRawValue().isEmpty()) {
-                sb.append(messages.getTools().localeToString(entry.getKey()))
-                        .append("=").append(entry.getValue().getRawValue()).append("\n");
+                properties.setProperty(entry.getKey().toString(), entry.getValue().getRawValue());
             }
         }
-        return sb.toString();
+
+        StringWriter writer = new StringWriter();
+        boolean isWritten = false;
+        try {
+            properties.store(writer, "");
+            isWritten = true;
+        } catch (IOException ignored) {
+        }
+
+        if (isWritten) {
+            StringBuffer buffer = writer.getBuffer();
+            Pattern pattern = Pattern.compile("(?m)^#.*\\s\\s");
+
+            return pattern.matcher(buffer).replaceAll("");
+        }
+        return "";
     }
 
     public void setValue(String localeBundle) {
@@ -74,12 +91,8 @@ public class LocalizedNameFrame extends AbstractFrame {
 
         Map<String, String> localizedNamesMap = LocaleHelper.getLocalizedNames(localeBundle);
         for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
-            for (Map.Entry<String, String> locEntry : localizedNamesMap.entrySet()) {
-                if (textFieldEntry.getKey().toString().equals(locEntry.getKey())) {
-                    textFieldEntry.getValue().setValue(locEntry.getValue());
-                    break;
-                }
-            }
+            String keyLocale = textFieldEntry.getKey().toString();
+            textFieldEntry.getValue().setValue(localizedNamesMap.get(keyLocale));
         }
     }
 }

@@ -15,13 +15,8 @@
  *
  */
 
-@mixin cuba-localized-frame($primary-stylename: c-scrollbox) {
-
-  .maxSize {
+@mixin cuba-localized-frame {
+  .c-localizedname-scrollbox {
     max-height: 250px;
-  }
-
-  .v-widget.#{$primary-stylename}-content.v-verticallayout-c-scrollbox-content{
-    padding: 0 10px 0 10px;
   }
 }

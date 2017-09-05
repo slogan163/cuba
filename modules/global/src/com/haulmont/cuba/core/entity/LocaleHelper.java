@@ -31,7 +31,6 @@ public final class LocaleHelper {
     }
 
     public static String getLocalizedName(String localeBundle) {
-        localeBundle = QueryUtils.escapeForLike(localeBundle);
         Locale locale = AppBeans.get(UserSessionSource.class).getLocale();
         String localeName = null;
         if (StringUtils.isNotEmpty(localeBundle)) {
@@ -56,7 +55,6 @@ public final class LocaleHelper {
     }
 
     public static Map<String, String> getLocalizedNames(String localeBundle) {
-        localeBundle = QueryUtils.escapeForLike(localeBundle);
         if (StringUtils.isNotEmpty(localeBundle)) {
             StringReader reader = new StringReader(localeBundle);
             Properties localeProperties = new Properties();

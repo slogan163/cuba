@@ -131,11 +131,11 @@ public class CategoryAttribute extends StandardEntity {
     protected String filterXml;
 
     @Column(name = "LOCALE_NAMES")
-    private String localeNames;
+    protected String localeNames;
 
     @Transient
     @MetaProperty
-    private String localeName;
+    protected String localeName;
 
     @PostConstruct
     public void init() {

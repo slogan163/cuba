@@ -40,7 +40,7 @@
                          requiredMessage="msg://entityTypeRequired"/>
             <checkBox id="isDefault" caption="msg://isDefault" align="MIDDLE_LEFT"/>
         </hbox>
-        <groupBox width="300px" collapsable="true" collapsed="true" caption="msg://localeGroupBox.caption">
+        <groupBox width="450px" collapsable="true" collapsed="true" caption="msg://localeGroupBox.caption">
             <frame id="localizedFrame" screen="localizedNameFrame" height="AUTO" width="100%"/>
         </groupBox>
         <label value="msg://attributes" stylename="h2"/>
