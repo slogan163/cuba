@@ -115,7 +115,7 @@ public class WindowBreadCrumbs extends CssLayout {
         WebWindow webWindow = (WebWindow) ComponentsHelper.getWindowImplementation(currentWindow);
 
         if (webWindow != null) {
-            Window.PreCloseWithCloseButtonEvent event = new Window.PreCloseWithCloseButtonEvent(webWindow);
+            Window.BeforeCloseWithCloseButtonEvent event = new Window.BeforeCloseWithCloseButtonEvent(webWindow);
             webWindow.fireBeforeCloseWithCloseButton(event);
             return event.isClosePrevented();
         }

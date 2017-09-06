@@ -236,7 +236,7 @@ public class DesktopWindow implements Window, Component.Disposable,
         getEventRouter().removeListener(BeforeCloseWithShortcutListener.class, listener);
     }
 
-    public void fireBeforeCloseWithShortcut(PreCloseWithShortcutEvent event) {
+    public void fireBeforeCloseWithShortcut(BeforeCloseWithShortcutEvent event) {
         getEventRouter().fireEvent(BeforeCloseWithShortcutListener.class,
                 BeforeCloseWithShortcutListener::beforeCloseWithShortcut, event);
     }
@@ -251,7 +251,7 @@ public class DesktopWindow implements Window, Component.Disposable,
         getEventRouter().removeListener(BeforeCloseWithCloseButtonListener.class, listener);
     }
 
-    public void fireBeforeCloseWithCloseButton(PreCloseWithCloseButtonEvent event) {
+    public void fireBeforeCloseWithCloseButton(BeforeCloseWithCloseButtonEvent event) {
         getEventRouter().fireEvent(BeforeCloseWithCloseButtonListener.class,
                 BeforeCloseWithCloseButtonListener::beforeCloseWithCloseButton, event);
     }

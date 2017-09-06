@@ -36,8 +36,8 @@ import com.haulmont.cuba.gui.components.Action.Status;
 import com.haulmont.cuba.gui.components.Component.BelongToFrame;
 import com.haulmont.cuba.gui.components.DialogAction.Type;
 import com.haulmont.cuba.gui.components.Window;
-import com.haulmont.cuba.gui.components.Window.PreCloseWithCloseButtonEvent;
-import com.haulmont.cuba.gui.components.Window.PreCloseWithShortcutEvent;
+import com.haulmont.cuba.gui.components.Window.BeforeCloseWithCloseButtonEvent;
+import com.haulmont.cuba.gui.components.Window.BeforeCloseWithShortcutEvent;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.components.mainwindow.AppWorkArea;
 import com.haulmont.cuba.gui.components.mainwindow.FoldersPane;
@@ -1703,7 +1703,7 @@ public class WebWindowManager extends WindowManager {
         WebWindow webWindow = (WebWindow) ComponentsHelper.getWindowImplementation(currentWindow);
 
         if (webWindow != null) {
-            PreCloseWithShortcutEvent event = new PreCloseWithShortcutEvent(webWindow);
+            BeforeCloseWithShortcutEvent event = new BeforeCloseWithShortcutEvent(webWindow);
             webWindow.fireBeforeCloseWithShortcut(event);
             return event.isClosePrevented();
         }
@@ -1715,7 +1715,7 @@ public class WebWindowManager extends WindowManager {
         WebWindow webWindow = (WebWindow) ComponentsHelper.getWindowImplementation(currentWindow);
 
         if (webWindow != null) {
-            PreCloseWithCloseButtonEvent event = new PreCloseWithCloseButtonEvent(webWindow);
+            BeforeCloseWithCloseButtonEvent event = new BeforeCloseWithCloseButtonEvent(webWindow);
             webWindow.fireBeforeCloseWithCloseButton(event);
             return event.isClosePrevented();
         }

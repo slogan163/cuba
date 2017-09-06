@@ -462,13 +462,13 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
         void windowClosedWithCommitAction();
     }
 
-    class PreCloseEvent extends EventObject {
+    class BeforeCloseEvent extends EventObject {
         protected boolean closePrevented = false;
 
         /**
          * @param source the window to be closed
          */
-        public PreCloseEvent(Window source) {
+        public BeforeCloseEvent(Window source) {
             super(source);
         }
 
@@ -495,18 +495,18 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
          *
          * @param event an event providing more information
          */
-        void beforeCloseWithShortcut(PreCloseWithShortcutEvent event);
+        void beforeCloseWithShortcut(BeforeCloseWithShortcutEvent event);
     }
 
 
     /**
      * An event that is fired before a screen is closed with {@link ClientConfig#getCloseShortcut()}.
      */
-    class PreCloseWithShortcutEvent extends PreCloseEvent {
+    class BeforeCloseWithShortcutEvent extends BeforeCloseEvent {
         /**
          * @param source the window to be closed
          */
-        public PreCloseWithShortcutEvent(Window source) {
+        public BeforeCloseWithShortcutEvent(Window source) {
             super(source);
         }
     }
@@ -536,18 +536,18 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
          *
          * @param event an event providing more information
          */
-        void beforeCloseWithCloseButton(PreCloseWithCloseButtonEvent event);
+        void beforeCloseWithCloseButton(BeforeCloseWithCloseButtonEvent event);
     }
 
     /**
      * An event that is fired before a screen is closed with one of the following approaches:
      * screen's close button, bread crumbs, TabSheet tabs' close actions (Close, Close All, Close Others).
      */
-    class PreCloseWithCloseButtonEvent extends PreCloseEvent {
+    class BeforeCloseWithCloseButtonEvent extends BeforeCloseEvent {
         /**
          * @param source the window to be closed
          */
-        public PreCloseWithCloseButtonEvent(Window source) {
+        public BeforeCloseWithCloseButtonEvent(Window source) {
             super(source);
         }
     }

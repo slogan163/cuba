@@ -2023,7 +2023,7 @@ public class DesktopWindowManager extends WindowManager {
         DesktopWindow desktopWindow = (DesktopWindow) ComponentsHelper.getWindowImplementation(currentWindow);
 
         if (desktopWindow != null) {
-            Window.PreCloseWithShortcutEvent event = new Window.PreCloseWithShortcutEvent(desktopWindow);
+            Window.BeforeCloseWithShortcutEvent event = new Window.BeforeCloseWithShortcutEvent(desktopWindow);
             desktopWindow.fireBeforeCloseWithShortcut(event);
             return event.isClosePrevented();
         }
@@ -2035,7 +2035,7 @@ public class DesktopWindowManager extends WindowManager {
         DesktopWindow desktopWindow = (DesktopWindow) ComponentsHelper.getWindowImplementation(currentWindow);
 
         if (desktopWindow != null) {
-            Window.PreCloseWithCloseButtonEvent event = new Window.PreCloseWithCloseButtonEvent(desktopWindow);
+            Window.BeforeCloseWithCloseButtonEvent event = new Window.BeforeCloseWithCloseButtonEvent(desktopWindow);
             desktopWindow.fireBeforeCloseWithCloseButton(event);
             return event.isClosePrevented();
         }

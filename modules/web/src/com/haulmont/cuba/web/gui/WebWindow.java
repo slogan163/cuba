@@ -686,7 +686,7 @@ public class WebWindow implements Window, Component.Wrapper,
         getEventRouter().removeListener(BeforeCloseWithShortcutListener.class, listener);
     }
 
-    public void fireBeforeCloseWithShortcut(PreCloseWithShortcutEvent event) {
+    public void fireBeforeCloseWithShortcut(BeforeCloseWithShortcutEvent event) {
         getEventRouter().fireEvent(BeforeCloseWithShortcutListener.class,
                 BeforeCloseWithShortcutListener::beforeCloseWithShortcut, event);
     }
@@ -701,7 +701,7 @@ public class WebWindow implements Window, Component.Wrapper,
         getEventRouter().removeListener(BeforeCloseWithCloseButtonListener.class, listener);
     }
 
-    public void fireBeforeCloseWithCloseButton(PreCloseWithCloseButtonEvent event) {
+    public void fireBeforeCloseWithCloseButton(BeforeCloseWithCloseButtonEvent event) {
         getEventRouter().fireEvent(BeforeCloseWithCloseButtonListener.class,
                 BeforeCloseWithCloseButtonListener::beforeCloseWithCloseButton, event);
     }
