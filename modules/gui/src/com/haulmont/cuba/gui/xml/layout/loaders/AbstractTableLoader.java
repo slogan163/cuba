@@ -194,7 +194,7 @@ public abstract class AbstractTableLoader<T extends Table> extends ActionsHolder
                     }
 
                     final Table.Column column = new Table.Column(metaPropertyPath);
-                    column.setCaption(attribute.getName());
+                    column.setCaption(attribute.getLocaleName());
                     column.setMaxTextLength(clientConfig.getDynamicAttributesTableColumnMaxTextLength());
                     component.addColumn(column);
                 }

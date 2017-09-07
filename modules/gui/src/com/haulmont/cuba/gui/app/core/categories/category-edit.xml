@@ -32,7 +32,7 @@
 
     <layout expand="categoryAttrsFrame" spacing="true">
         <hbox id="categoryProperties" spacing="true">
-            <label value="msg://name" align="MIDDLE_LEFT"/>
+            <label value="msg://com.haulmont.cuba.core.entity/Category.name" align="MIDDLE_LEFT"/>
             <textField width="${fieldWidth}" id="name" datasource="categoryDs" property="name" required="true"
                        requiredMessage="msg://nameRequired"/>
             <label value="msg://entityType" align="MIDDLE_LEFT"/>

@@ -406,7 +406,7 @@ public class CategoryAttribute extends StandardEntity {
     }
 
     @MetaProperty
-    public String getLocaleName(){
+    public String getLocaleName() {
         if (localeName == null) {
             localeName = LocaleHelper.getLocalizedName(localeNames);
             if (localeName == null)
