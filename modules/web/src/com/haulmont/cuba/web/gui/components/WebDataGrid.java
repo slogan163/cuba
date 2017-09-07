@@ -1128,7 +1128,13 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
 
             AbstractField<?> content = (AbstractField<?>) WebComponentsHelper.getComposition(columnComponent);
 
-            CustomField wrapper = new DataGridEditorCustomField(columnComponent);
+            CustomField wrapper = new DataGridEditorCustomField(columnComponent) {
+                @Override
+                protected Component initContent() {
+                    return content;
+                }
+            };
+
             //noinspection unchecked
             wrapper.setConverter(new ObjectToObjectConverter());
             wrapper.setFocusDelegate(content);
@@ -1143,19 +1149,12 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
         }
     }
 
-    protected static class DataGridEditorCustomField extends CustomField {
+    protected static abstract class DataGridEditorCustomField extends CustomField {
 
         protected Field columnComponent;
-        protected AbstractField<?> content;
 
         public DataGridEditorCustomField(Field columnComponent) {
             this.columnComponent = columnComponent;
-            content = (AbstractField<?>) WebComponentsHelper.getComposition(columnComponent);
-        }
-
-        @Override
-        protected com.vaadin.ui.Component initContent() {
-            return content;
         }
 
         @Override
