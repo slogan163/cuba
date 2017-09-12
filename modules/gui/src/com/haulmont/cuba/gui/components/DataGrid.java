@@ -592,19 +592,19 @@ public interface DataGrid<E extends Entity> extends ListComponent<E>, Component.
      * giving the possibility to change their values programmatically.
      * <p>
      * Sample usage:
-     * <pre>
-     * dataGrid.addEditorOpenListener(event -&gt; {
-     *      Map&lt;String, Field&gt; fields = event.getFields();
+     * <pre>{@code
+     * dataGrid.addEditorOpenListener(event -> {
+     *      Map<String, Field> fields = event.getFields();
      *      Field field1 = fields.get("field1");
      *      Field field2 = fields.get("field2");
      *      Field sum = fields.get("sum");
      *
-     *      ValueChangeListener valueChangeListener = e -&gt;
+     *      ValueChangeListener valueChangeListener = e ->
      *      sum.setValue((int) field1.getValue() + (int) field2.getValue());
      *      field1.addValueChangeListener(valueChangeListener);
      *      field2.addValueChangeListener(valueChangeListener);
      * });
-     * </pre>
+     * }</pre>
      */
     class EditorOpenEvent extends AbstractDataGridEditorEvent {
         protected Map<String, Field> fields;
