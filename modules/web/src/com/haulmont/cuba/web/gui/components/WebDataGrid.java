@@ -132,7 +132,7 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
     protected com.vaadin.event.SortEvent.SortListener sortListener;
     protected com.vaadin.event.ContextClickEvent.ContextClickListener contextClickListener;
     protected CubaGrid.EditorCloseListener editorCloseListener;
-    protected CubaGrid.EditorOpenListener editorOpenListener;
+    protected CubaGrid.BeforeEditorOpenListener beforeEditorOpenListener;
     protected CubaGrid.EditorPreCommitListener editorPreCommitListener;
     protected CubaGrid.EditorPostCommitListener editorPostCommitListener;
 
@@ -991,22 +991,21 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
     public void addEditorOpenListener(EditorOpenListener listener) {
         getEventRouter().addListener(EditorOpenListener.class, listener);
 
-        if (editorOpenListener == null) {
-            editorOpenListener = event -> {
-                Map<String, Field> fields = new HashMap<>();
-                event.getColumnFieldMap().keySet().forEach(gridColumn -> {
-                    Column column = getColumnByGridColumn(gridColumn);
-                    if (column != null) {
-                        DataGridEditorCustomField customField =
-                                (DataGridEditorCustomField) event.getColumnFieldMap().get(gridColumn);
-                        fields.put(column.getId(), customField.getField());
-                    }
-                });
+        if (beforeEditorOpenListener == null) {
+            beforeEditorOpenListener = event -> {
+                //noinspection ConstantConditions
+                Map<String, Field> fields = event.getColumnFieldMap().entrySet().stream()
+                        .filter(entry ->
+                                getColumnByGridColumn(entry.getKey()) != null)
+                        .collect(Collectors.toMap(
+                                entry -> getColumnByGridColumn(entry.getKey()).getId(),
+                                entry -> ((DataGridEditorCustomField) entry.getValue()).getField())
+                        );
 
                 EditorOpenEvent e = new EditorOpenEvent(WebDataGrid.this, event.getItem(), fields);
                 getEventRouter().fireEvent(EditorOpenListener.class, EditorOpenListener::beforeEditorOpened, e);
             };
-            component.addEditorOpenListener(editorOpenListener);
+            component.addEditorOpenListener(beforeEditorOpenListener);
         }
     }
 
@@ -1015,8 +1014,8 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
         getEventRouter().removeListener(EditorOpenListener.class, listener);
 
         if (!getEventRouter().hasListeners(EditorOpenListener.class)) {
-            component.removeEditorOpenListener(editorOpenListener);
-            editorOpenListener = null;
+            component.removeEditorOpenListener(beforeEditorOpenListener);
+            beforeEditorOpenListener = null;
         }
     }
 

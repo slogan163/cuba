@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import static com.haulmont.cuba.web.toolkit.ui.CubaGrid.EditorCloseListener.EDITOR_CLOSE_METHOD;
-import static com.haulmont.cuba.web.toolkit.ui.CubaGrid.EditorOpenListener.EDITOR_OPEN_METHOD;
+import static com.haulmont.cuba.web.toolkit.ui.CubaGrid.BeforeEditorOpenListener.EDITOR_OPEN_METHOD;
 import static com.haulmont.cuba.web.toolkit.ui.CubaGrid.EditorPostCommitListener.EDITOR_POST_COMMIT_METHOD;
 import static com.haulmont.cuba.web.toolkit.ui.CubaGrid.EditorPreCommitListener.EDITOR_PRE_COMMIT_METHOD;
 
@@ -263,13 +263,13 @@ public class CubaGrid extends Grid implements Action.ShortcutNotifier {
     }
 
     protected void fireEditorOpenEvent(Map<Column, Field> columnFieldMap) {
-        fireEvent(new EditorBeforeOpenEvent(this, editedItemId, columnFieldMap));
+        fireEvent(new BeforeEditorOpenEvent(this, editedItemId, columnFieldMap));
     }
 
-    public class EditorBeforeOpenEvent extends EditorEvent {
+    public class BeforeEditorOpenEvent extends EditorEvent {
         Map<Column, Field> columnFieldMap;
 
-        protected EditorBeforeOpenEvent(Grid source, Object itemID, Map<Column, Field> columnFieldMap) {
+        protected BeforeEditorOpenEvent(Grid source, Object itemID, Map<Column, Field> columnFieldMap) {
             super(source, itemID);
             this.columnFieldMap = columnFieldMap;
         }
@@ -279,19 +279,19 @@ public class CubaGrid extends Grid implements Action.ShortcutNotifier {
         }
     }
 
-    public interface EditorOpenListener {
+    public interface BeforeEditorOpenListener {
         Method EDITOR_OPEN_METHOD =
-                ReflectTools.findMethod(EditorOpenListener.class, "beforeEditorOpened", EditorBeforeOpenEvent.class);
+                ReflectTools.findMethod(BeforeEditorOpenListener.class, "beforeEditorOpened", BeforeEditorOpenEvent.class);
 
-        void beforeEditorOpened(EditorBeforeOpenEvent event);
+        void beforeEditorOpened(BeforeEditorOpenEvent event);
     }
 
-    public void addEditorOpenListener(EditorOpenListener listener) {
-        addListener(EditorBeforeOpenEvent.class, listener, EDITOR_OPEN_METHOD);
+    public void addEditorOpenListener(BeforeEditorOpenListener listener) {
+        addListener(BeforeEditorOpenEvent.class, listener, EDITOR_OPEN_METHOD);
     }
 
-    public void removeEditorOpenListener(EditorOpenListener listener) {
-        removeListener(EditorBeforeOpenEvent.class, listener, EDITOR_OPEN_METHOD);
+    public void removeEditorOpenListener(BeforeEditorOpenListener listener) {
+        removeListener(BeforeEditorOpenEvent.class, listener, EDITOR_OPEN_METHOD);
     }
 
     public interface EditorCloseListener {

@@ -588,6 +588,23 @@ public interface DataGrid<E extends Entity> extends ListComponent<E>, Component.
 
     /**
      * An event that is fired before the DataGrid editor is opened.
+     * Provides access to the components that will be used in the editor,
+     * giving the possibility to change their values programmatically.
+     * <p>
+     * Sample usage:
+     * <pre>
+     * dataGrid.addEditorOpenListener(event -> {
+     *      Map<String, Field> fields = event.getFields();
+     *      Field field1 = fields.get("field1");
+     *      Field field2 = fields.get("field2");
+     *      Field sum = fields.get("sum");
+     *
+     *      ValueChangeListener valueChangeListener = e ->
+     *      sum.setValue((int) field1.getValue() + (int) field2.getValue());
+     *      field1.addValueChangeListener(valueChangeListener);
+     *      field2.addValueChangeListener(valueChangeListener);
+     * });
+     * </pre>
      */
     class EditorOpenEvent extends AbstractDataGridEditorEvent {
         protected Map<String, Field> fields;
@@ -595,7 +612,8 @@ public interface DataGrid<E extends Entity> extends ListComponent<E>, Component.
         /**
          * @param component the DataGrid from which this event originates
          * @param itemId    the editing item id
-         * @param fields    // todo
+         * @param fields    the map, where key - DataGrid column's id
+         *                  and value - the field that is used in the editor for this column
          */
         public EditorOpenEvent(DataGrid component, Object itemId, Map<String, Field> fields) {
             super(component, itemId);
