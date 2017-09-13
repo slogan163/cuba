@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Component(ListEditorDelegate.NAME)
@@ -51,6 +52,10 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
 
     protected List value;
     protected List prevValue;
+
+    protected ListEditor.EditorCloseListener editorCloseListener;
+    protected Supplier<Map<String, Object>> editorParamsSupplier;
+    protected String editorWindowId = "list-editor-popup";
 
     protected ListEditor.ItemType itemType;
     protected String entityName;
@@ -101,11 +106,23 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
                 params.put("entityWhereClause", entityWhereClause);
                 params.put("values", getValue());
                 params.put("editable", editable);
-                ListEditorPopupWindow listEditorPopup = (ListEditorPopupWindow) windowManager
-                        .openWindow(windowConfig.getWindowInfo("list-editor-popup"), WindowManager.OpenType.DIALOG, params);
+
+                if (editorParamsSupplier != null) {
+                    Map<String, Object> additionalParams = getEditorParamsSupplier().get();
+                    if (additionalParams != null) {
+                        params.putAll(additionalParams);
+                    }
+                }
+
+                ListEditorWindowController listEditorPopup = (ListEditorWindowController) windowManager
+                        .openWindow(windowConfig.getWindowInfo(editorWindowId), WindowManager.OpenType.DIALOG, params);
                 listEditorPopup.addCloseListener(actionId -> {
                     if (Window.COMMIT_ACTION_ID.equals(actionId)) {
                         actualField.setValue(listEditorPopup.getValue());
+                    }
+
+                    if (editorCloseListener != null) {
+                        editorCloseListener.editorClosed(new ListEditor.EditorCloseEvent(actionId, listEditorPopup));
                     }
                 });
             }
@@ -291,5 +308,30 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
                         ));
 
         layout.add(clearBtn);
+    }
+
+    @Override
+    public void setEditorWindowId(String windowId) {
+        editorWindowId = windowId;
+    }
+
+    @Override
+    public String getEditorWindowId() {
+        return editorWindowId;
+    }
+
+    @Override
+    public void setEditorCloseListener(ListEditor.EditorCloseListener listener) {
+        editorCloseListener = listener;
+    }
+
+    @Override
+    public void setEditorParamsSupplier(Supplier<Map<String, Object>> paramsSupplier) {
+        editorParamsSupplier = paramsSupplier;
+    }
+
+    @Override
+    public Supplier<Map<String, Object>> getEditorParamsSupplier() {
+        return editorParamsSupplier;
     }
 }

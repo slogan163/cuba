@@ -48,7 +48,7 @@ import java.util.stream.Stream;
 /**
  * A dialog that is used for editing values of the {@link ListEditor} component.
  */
-public class ListEditorPopupWindow extends AbstractWindow {
+public class ListEditorPopupWindow extends AbstractWindow implements ListEditorWindowController {
 
     @Inject
     protected HBoxLayout addItemLayout;
