@@ -133,9 +133,16 @@ public class CategoryAttribute extends StandardEntity {
     @Column(name = "LOCALE_NAMES")
     protected String localeNames;
 
+    @Column(name = "ENUMERATION_LOCALES")
+    protected String enumerationLocales;
+
     @Transient
     @MetaProperty
     protected String localeName;
+
+    @Transient
+    @MetaProperty
+    protected String enumerationLocale;
 
     @PostConstruct
     public void init() {
@@ -413,5 +420,24 @@ public class CategoryAttribute extends StandardEntity {
                 localeName = name;
         }
         return localeName;
+    }
+
+    public void setEnumerationLocales(String enumerationLocales) {
+        this.enumerationLocales = enumerationLocales;
+    }
+
+    public String getEnumerationLocales() {
+        return enumerationLocales;
+    }
+
+    @MetaProperty
+    public String getEnumerationLocale(){
+        if(enumerationLocale == null){
+            enumerationLocale = LocaleHelper.getLocalizedName(enumerationLocale);
+            if(enumerationLocale == null){
+                enumerationLocale = enumeration;
+            }
+        }
+        return enumerationLocale;
     }
 }

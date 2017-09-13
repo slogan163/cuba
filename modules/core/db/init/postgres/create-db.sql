@@ -773,6 +773,7 @@ create table SYS_CATEGORY_ATTR (
     WHERE_CLAUSE varchar(4000),
     FILTER_XML text,
     LOCALE_NAMES varchar(1000),
+    ENUMERATION_LOCALES varchar(1000),
     --
     primary key (ID),
     constraint SYS_CATEGORY_ATTR_CATEGORY_ID foreign key (CATEGORY_ID) references SYS_CATEGORY(ID)
