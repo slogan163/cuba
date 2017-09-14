@@ -754,7 +754,7 @@ create table SYS_CATEGORY_ATTR(
     WHERE_CLAUSE varchar(4000),
     FILTER_XML longvarchar,
     LOCALE_NAMES varchar(1000),
-    ENUMERATION_LOCALES varchar(1000),
+    ENUMERATION_LOCALES varchar(5000),
     --
     primary key (ID)
 )^

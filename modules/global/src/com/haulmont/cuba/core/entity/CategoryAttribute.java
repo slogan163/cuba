@@ -137,11 +137,11 @@ public class CategoryAttribute extends StandardEntity {
     protected String enumerationLocales;
 
     @Transient
-    @MetaProperty
+    @MetaProperty(related = "name")
     protected String localeName;
 
     @Transient
-    @MetaProperty
+    @MetaProperty(related = "name")
     protected String enumerationLocale;
 
     @PostConstruct
@@ -382,7 +382,7 @@ public class CategoryAttribute extends StandardEntity {
 
     public List<String> getEnumerationOptions() {
         Preconditions.checkState(getDataType() == PropertyType.ENUMERATION, "Only enumeration attributes have options");
-        String enumeration = getEnumeration();
+        String enumeration = getEnumerationLocale();
         String[] values = StringUtils.split(enumeration, ',');
         return values != null ? Arrays.asList(values) : Collections.<String>emptyList();
     }
@@ -412,7 +412,6 @@ public class CategoryAttribute extends StandardEntity {
         this.localeNames = localeNames;
     }
 
-    @MetaProperty
     public String getLocaleName() {
         if (localeName == null) {
             localeName = LocaleHelper.getLocalizedName(localeNames);
@@ -430,11 +429,10 @@ public class CategoryAttribute extends StandardEntity {
         return enumerationLocales;
     }
 
-    @MetaProperty
-    public String getEnumerationLocale(){
-        if(enumerationLocale == null){
-            enumerationLocale = LocaleHelper.getLocalizedName(enumerationLocale);
-            if(enumerationLocale == null){
+    public String getEnumerationLocale() {
+        if (enumerationLocale == null) {
+            enumerationLocale = LocaleHelper.getLocalizedEnumeration(enumerationLocales);
+            if (enumerationLocale == null) {
                 enumerationLocale = enumeration;
             }
         }

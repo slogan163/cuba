@@ -55,8 +55,8 @@ public class Category extends StandardEntity {
     @Column(name = "LOCALE_NAMES")
     protected String localeNames;
 
-    @MetaProperty
     @Transient
+    @MetaProperty(related = "name")
     protected String localeName;
 
     @Column(name = "SPECIAL")
@@ -110,7 +110,6 @@ public class Category extends StandardEntity {
         this.localeNames = localeNames;
     }
 
-    @MetaProperty
     public String getLocaleName() {
         if (localeName == null) {
             localeName = LocaleHelper.getLocalizedName(localeNames);

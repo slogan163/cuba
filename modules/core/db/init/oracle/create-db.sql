@@ -98,7 +98,7 @@ create table SYS_CATEGORY_ATTR (
     WHERE_CLAUSE varchar2(4000),
     FILTER_XML clob,
     LOCALE_NAMES varchar2(1000),
-    ENUMERATION_LOCALES varchar2(1000),
+    ENUMERATION_LOCALES clob,
 
     primary key(ID)
 )^
