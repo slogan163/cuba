@@ -22,10 +22,7 @@ import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class LocalizedNameFrame extends AbstractFrame {
 
@@ -67,32 +64,36 @@ public class LocalizedNameFrame extends AbstractFrame {
             }
         }
 
-        StringWriter writer = new StringWriter();
-        boolean isWritten = false;
-        try {
-            properties.store(writer, "");
-            isWritten = true;
-        } catch (IOException ignored) {
-        }
-
-        if (isWritten) {
-            StringBuffer buffer = writer.getBuffer();
-            Pattern pattern = Pattern.compile("(?m)^#.*\\s\\s");
-
-            return pattern.matcher(buffer).replaceAll("");
-        }
-        return "";
+        return LocaleHelper.convertPropertiesToString(properties);
     }
 
     public void setValue(String localeBundle) {
-        if (localeBundle == null) {
+        if (localeBundle == null || textFieldMap == null) {
             return;
         }
 
-        Map<String, String> localizedNamesMap = LocaleHelper.getLocalizedNames(localeBundle);
+        localeBundle = localeBundle.replaceAll("\\\\r\\\\n", "\r\n");
+
+        Map<String, String> localizedNamesMap = LocaleHelper.getLocalizedValuesMap(localeBundle);
         for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
             String keyLocale = textFieldEntry.getKey().toString();
             textFieldEntry.getValue().setValue(localizedNamesMap.get(keyLocale));
+        }
+    }
+
+    public void clearFields() {
+        if (textFieldMap != null) {
+            for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
+                textFieldEntry.getValue().setValue("");
+            }
+        }
+    }
+
+    public void setEditableFields(boolean enable) {
+        if (textFieldMap != null) {
+            for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
+                textFieldEntry.getValue().setEditable(enable);
+            }
         }
     }
 }

@@ -22,6 +22,7 @@
         <scrollBox id="localesScrollBox"
                    spacing="true"
                    stylename="c-localizedname-scrollbox"
+                   height="100%"
                    width="100%">
         </scrollBox>
     </layout>

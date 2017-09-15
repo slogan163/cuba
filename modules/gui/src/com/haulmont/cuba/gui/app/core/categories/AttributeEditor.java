@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.haulmont.bali.util.Dom4j;
+import com.haulmont.bali.util.ParamsMap;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.cuba.core.app.dynamicattributes.PropertyType;
 import com.haulmont.cuba.core.entity.CategoryAttribute;
@@ -292,6 +293,15 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
             enumerationListEditor.addValueChangeListener(e -> {
                 List<String> value = (List<String>) e.getValue();
                 attribute.setEnumeration(Joiner.on(",").join(value));
+            });
+            enumerationListEditor.setEditorWindowId("localizedEnumerationWindow");
+            enumerationListEditor.setEditorParamsSupplier(() ->
+                    ParamsMap.of("enumerationLocales", attribute.getEnumerationLocales()));
+            enumerationListEditor.setEditorCloseListener(closeEvent -> {
+                if (closeEvent.getActionId().equals(COMMIT_ACTION_ID)) {
+                    LocalizedEnumerationWindow enumerationWindow = (LocalizedEnumerationWindow) closeEvent.getWindow();
+                    attribute.setEnumerationLocales(enumerationWindow.getLocalizedValues());
+                }
             });
             return enumerationListEditor;
         });
