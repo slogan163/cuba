@@ -26,6 +26,7 @@ import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.VPanel;
 import com.vaadin.client.ui.panel.PanelConnector;
 import com.vaadin.shared.ui.Connect;
+import com.vaadin.shared.ui.MarginInfo;
 
 @Connect(CubaGroupBox.class)
 public class CubaGroupBoxConnector extends PanelConnector {
@@ -153,6 +154,7 @@ public class CubaGroupBoxConnector extends PanelConnector {
         widget.setCollapsable(getState().collapsable);
         widget.setExpanded(getState().expanded);
         widget.setShowAsPanel(getState().showAsPanel);
+        widget.setOuterMargin(new MarginInfo(getState().outerMarginsBitmask));
 
         if (stateChangeEvent.hasPropertyChanged("caption")) {
             widget.captionNode.getStyle().clearWidth();

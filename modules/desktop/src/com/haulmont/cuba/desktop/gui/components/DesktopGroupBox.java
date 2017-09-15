@@ -20,6 +20,7 @@ package com.haulmont.cuba.desktop.gui.components;
 import com.haulmont.cuba.desktop.sys.layout.BoxLayoutAdapter;
 import com.haulmont.cuba.desktop.sys.vcl.CollapsiblePanel;
 import com.haulmont.cuba.gui.components.GroupBoxLayout;
+import com.haulmont.cuba.gui.components.MarginInfo;
 import com.haulmont.cuba.gui.components.compatibility.ComponentExpandCollapseListenerWrapper;
 import org.apache.commons.lang.BooleanUtils;
 import org.dom4j.Element;
@@ -241,5 +242,16 @@ public class DesktopGroupBox extends DesktopAbstractBox implements GroupBoxLayou
     @Override
     public boolean expandsHeight() {
         return orientation == Orientation.HORIZONTAL;
+    }
+
+    @Override
+    public void setOuterMargin(MarginInfo marginInfo) {
+        // TODO: gg,
+    }
+
+    @Override
+    public MarginInfo getOuterMargin() {
+        // TODO: gg,
+        return null;
     }
 }

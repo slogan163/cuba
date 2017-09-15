@@ -921,6 +921,19 @@ public interface Component {
         MarginInfo getMargin();
     }
 
+    interface OuterMargin {
+        default void setOuterMargin(boolean enable) {
+            setOuterMargin(new MarginInfo(enable, enable, enable, enable));
+        }
+
+        default void setOuterMargin(boolean topEnable, boolean rightEnable, boolean bottomEnable, boolean leftEnable) {
+            setOuterMargin(new MarginInfo(topEnable, rightEnable, bottomEnable, leftEnable));
+        }
+
+        void setOuterMargin(MarginInfo marginInfo);
+        MarginInfo getOuterMargin();
+    }
+
     interface HasInputPrompt {
         /**
          * @return current input prompt.
