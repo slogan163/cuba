@@ -1318,7 +1318,7 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
                 component.setSelectionModel(new CubaMultiSelectionModel());
                 break;
             case MULTI_CHECK:
-                component.setSelectionMode(Grid.SelectionMode.MULTI);
+                component.setSelectionModel(new CubaMultiCheckSelectionModel());
                 break;
             case NONE:
                 component.setSelectionMode(Grid.SelectionMode.NONE);
