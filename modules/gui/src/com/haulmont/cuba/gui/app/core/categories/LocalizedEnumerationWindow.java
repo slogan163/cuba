@@ -116,7 +116,7 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
 
         for (Map.Entry<Object, String> entry : valuesMap.entrySet()) {
             String localizedEnum = localizedValues.get(entry.getValue());
-            addValueToDatasource(entry.getKey(), localizedEnum);
+            addValueToDatasource(entry.getKey(), localizedEnum.replace("\\r\\n", "\r\n"));
         }
 
         enumValuesDs.commit();
