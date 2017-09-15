@@ -839,7 +839,7 @@ public class Param {
         }
 
         runtimeEnum = new LinkedList<>();
-        String enumerationString = categoryAttribute.getEnumerationLocale();
+        String enumerationString = categoryAttribute.getLocalizedEnumeration();
         String[] array = StringUtils.split(enumerationString, ',');
         for (String s : array) {
             String trimmedValue = StringUtils.trimToNull(s);

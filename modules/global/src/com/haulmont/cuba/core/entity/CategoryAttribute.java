@@ -244,7 +244,7 @@ public class CategoryAttribute extends StandardEntity {
                 case BOOLEAN: return defaultBoolean;
                 case DATE: return defaultDate;
                 case STRING: return defaultString;
-                case ENUMERATION: return defaultString;
+                case ENUMERATION: return LocaleHelper.getEnumLocalizedValue(defaultString, enumerationLocales);
                 case ENTITY: return getObjectDefaultEntityId();
                 default: return null;
             }
@@ -382,7 +382,7 @@ public class CategoryAttribute extends StandardEntity {
 
     public List<String> getEnumerationOptions() {
         Preconditions.checkState(getDataType() == PropertyType.ENUMERATION, "Only enumeration attributes have options");
-        String enumeration = getEnumerationLocale();
+        String enumeration = getLocalizedEnumeration();
         String[] values = StringUtils.split(enumeration, ',');
         return values != null ? Arrays.asList(values) : Collections.<String>emptyList();
     }
@@ -429,7 +429,7 @@ public class CategoryAttribute extends StandardEntity {
         return enumerationLocales;
     }
 
-    public String getEnumerationLocale() {
+    public String getLocalizedEnumeration() {
         if (enumerationLocale == null) {
             enumerationLocale = LocaleHelper.getLocalizedEnumeration(enumerationLocales);
             if (enumerationLocale == null) {

@@ -89,6 +89,23 @@ public final class LocaleHelper {
         return result;
     }
 
+    public static String getEnumLocalizedValue(String enumValue, String localeBundle) {
+        if (enumValue == null) {
+            return null;
+        }
+
+        if (localeBundle == null) {
+            return enumValue;
+        }
+
+        Map<String, String> map = getLocalizedValuesMap(localeBundle);
+        String locales = map.getOrDefault(enumValue, "");
+        locales = locales.replaceAll("\\\\r\\\\n", "\r\n");
+        String result = getLocalizedName(locales);
+
+        return result == null ? enumValue : result;
+    }
+
     public static String convertPropertiesToString(Properties properties) {
         StringWriter writer = new StringWriter();
         String result = null;
