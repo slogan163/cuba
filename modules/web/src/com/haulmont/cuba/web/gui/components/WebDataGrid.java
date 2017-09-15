@@ -296,6 +296,11 @@ public class WebDataGrid<E extends Entity> extends WebAbstractComponent<CubaGrid
 
                 //noinspection unchecked
                 E item = (E) datasource.getItem(e.getItemId());
+                if (item == null) {
+                    // this can happen if user clicked on an item which is removed from the
+                    // datasource, so we don't want to send such event because it's useless
+                    return;
+                }
                 Column column = getColumnByPropertyId(e.getPropertyId());
 
                 ItemClickEvent<E> event = new ItemClickEvent<>(WebDataGrid.this,

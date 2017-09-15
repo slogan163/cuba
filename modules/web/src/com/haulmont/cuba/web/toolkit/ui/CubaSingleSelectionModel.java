@@ -26,7 +26,7 @@ public class CubaSingleSelectionModel extends Grid.SingleSelectionModel {
         // right after removing from the container (triggered from
         // a client side i.e. refresh is false)
         // See https://github.com/vaadin/framework/issues/9911
-        if (!refresh) {
+        if (!refresh && itemId != null) {
             if (!getParentGrid().getContainerDataSource().containsId(itemId)) {
                 return false;
             }
