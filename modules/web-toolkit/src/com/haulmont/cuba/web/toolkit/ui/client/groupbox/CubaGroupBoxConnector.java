@@ -115,7 +115,7 @@ public class CubaGroupBoxConnector extends PanelConnector {
         Style style = panel.getElement().getStyle();
         int paddingTop = 0;
         int paddingBottom = 0;
-        if (panel.hasAnyOuterPadding()) {
+        if (panel.hasAnyOuterMargin()) {
             Profiler.enter("PanelConnector.layout get values from styles");
             // Clear previously set values
 

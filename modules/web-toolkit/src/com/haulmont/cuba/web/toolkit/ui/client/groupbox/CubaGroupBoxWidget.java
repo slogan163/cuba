@@ -191,7 +191,7 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
         }
     }
 
-    public boolean hasAnyOuterPadding() {
+    public boolean hasAnyOuterMargin() {
         return marginInfo != null
                 && marginInfo.hashCode() != 0;
     }
