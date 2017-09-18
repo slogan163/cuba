@@ -18,6 +18,7 @@ package com.haulmont.cuba.gui.xml.layout.loaders;
 
 import com.haulmont.cuba.gui.GuiDevelopmentException;
 import com.haulmont.cuba.gui.components.GroupBoxLayout;
+import com.haulmont.cuba.gui.components.MarginInfo;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Element;
 
@@ -63,25 +64,10 @@ public class GroupBoxLayoutLoader extends ContainerLoader<GroupBoxLayout> {
     }
 
     private void loadOuterMargin(GroupBoxLayout resultComponent, Element element) {
-        // TODO: gg,
         final String margin = element.attributeValue("outerMargin");
         if (!StringUtils.isEmpty(margin)) {
-            if (margin.contains(";") || margin.contains(",")) {
-                final String[] margins = margin.split("[;,]");
-                if (margins.length != 4) {
-                    throw new GuiDevelopmentException(
-                            "Margin attribute must contain 1 or 4 boolean values separated by ',' or ';", context.getFullFrameId());
-                }
-
-                resultComponent.setOuterMargin(
-                        Boolean.parseBoolean(StringUtils.trimToEmpty(margins[0])),
-                        Boolean.parseBoolean(StringUtils.trimToEmpty(margins[1])),
-                        Boolean.parseBoolean(StringUtils.trimToEmpty(margins[2])),
-                        Boolean.parseBoolean(StringUtils.trimToEmpty(margins[3]))
-                );
-            } else {
-                resultComponent.setOuterMargin(Boolean.parseBoolean(margin));
-            }
+            MarginInfo marginInfo = parseMarginInfo(margin);
+            resultComponent.setOuterMargin(marginInfo);
         }
     }
 
