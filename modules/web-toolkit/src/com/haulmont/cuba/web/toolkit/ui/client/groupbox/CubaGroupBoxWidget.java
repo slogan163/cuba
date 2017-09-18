@@ -192,7 +192,6 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
 
     public void setOuterMargin(MarginInfo marginInfo) {
         if (marginInfo != null) {
-            // TODO: gg,
             setStyleName("c-outer-margin-top", marginInfo.hasTop());
             setStyleName("c-outer-margin-right", marginInfo.hasRight());
             setStyleName("c-outer-margin-bottom", marginInfo.hasBottom());
