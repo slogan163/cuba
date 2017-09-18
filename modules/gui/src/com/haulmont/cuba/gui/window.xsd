@@ -841,7 +841,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="hasOuterMargin">
-        <xs:attribute name="outerMargin" type="xs:boolean"/>
+        <xs:attribute name="outerMargin" type="xs:string"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="hasExpand">
