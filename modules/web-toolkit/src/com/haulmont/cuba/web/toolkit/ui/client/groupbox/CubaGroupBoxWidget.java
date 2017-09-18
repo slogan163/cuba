@@ -38,6 +38,7 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
     protected boolean enabled = true;
 
     protected ExpandHandler expandHandler;
+    protected MarginInfo marginInfo;
 
     public Element captionWrap;
     public Element expander = DOM.createSpan();
@@ -45,7 +46,6 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
     public Element captionStartDeco = DOM.createDiv();
     public Element captionEndDeco = DOM.createDiv();
     public Element captionTextNode;
-    private MarginInfo marginInfo;
 
     public CubaGroupBoxWidget(String primaryStyleName) {
         setStylePrimaryName(primaryStyleName);

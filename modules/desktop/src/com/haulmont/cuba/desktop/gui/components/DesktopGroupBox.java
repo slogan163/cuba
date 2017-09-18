@@ -40,6 +40,7 @@ public class DesktopGroupBox extends DesktopAbstractBox implements GroupBoxLayou
 
     protected boolean settingsEnabled = true;
     protected boolean showAsPanel;
+    protected MarginInfo outerMarginInfo;
 
     public DesktopGroupBox() {
         collapsiblePanel = new CollapsiblePanel(super.getComposition());
@@ -246,12 +247,11 @@ public class DesktopGroupBox extends DesktopAbstractBox implements GroupBoxLayou
 
     @Override
     public void setOuterMargin(MarginInfo marginInfo) {
-        // TODO: gg,
+        outerMarginInfo = marginInfo;
     }
 
     @Override
     public MarginInfo getOuterMargin() {
-        // TODO: gg,
-        return null;
+        return outerMarginInfo;
     }
 }
