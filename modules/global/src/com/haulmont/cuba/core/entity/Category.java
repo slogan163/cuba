@@ -56,7 +56,7 @@ public class Category extends StandardEntity {
     protected String localeNames;
 
     @Transient
-    @MetaProperty(related = "name")
+    @MetaProperty(related = "localeNames")
     protected String localeName;
 
     @Column(name = "SPECIAL")

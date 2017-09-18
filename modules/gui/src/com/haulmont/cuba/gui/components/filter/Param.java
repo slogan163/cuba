@@ -839,7 +839,7 @@ public class Param {
         }
 
         runtimeEnum = new LinkedList<>();
-        String enumerationString = categoryAttribute.getLocalizedEnumeration();
+        String enumerationString = categoryAttribute.getEnumeration();
         String[] array = StringUtils.split(enumerationString, ',');
         for (String s : array) {
             String trimmedValue = StringUtils.trimToNull(s);
@@ -851,12 +851,12 @@ public class Param {
         if (inExpr) {
             ListEditor listEditor = componentsFactory.createComponent(ListEditor.class);
             listEditor.setItemType(ListEditor.ItemType.STRING);
-            listEditor.setOptionsList(runtimeEnum);
+            listEditor.setOptionsMap(categoryAttribute.getLocalizedEnumerationMap());
             initListEditor(listEditor, valueProperty);
             return listEditor;
         } else {
             LookupField lookup = componentsFactory.createComponent(LookupField.class);
-            lookup.setOptionsList(runtimeEnum);
+            lookup.setOptionsMap(categoryAttribute.getLocalizedEnumerationMap());
 
             lookup.addValueChangeListener(e -> {
                 _setValue(e.getValue(), valueProperty);
