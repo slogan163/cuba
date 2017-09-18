@@ -137,7 +137,7 @@ public class CategoryAttribute extends StandardEntity {
     protected String enumerationLocales;
 
     @Transient
-    @MetaProperty(related = "localeNames,name")
+    @MetaProperty(related = {"localeNames", "name"})
     protected String localeName;
 
     @Transient
