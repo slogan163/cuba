@@ -112,16 +112,21 @@ public class CubaGroupBoxConnector extends PanelConnector {
         int bottom = layoutManager.getInnerHeight(panel.bottomDecoration);
         Profiler.leave("PanelConnector.layout getHeights");
 
-        Profiler.enter("PanelConnector.layout get values from styles");
-        // Clear previously set values
         Style style = panel.getElement().getStyle();
-        style.clearPaddingTop();
-        style.clearPaddingBottom();
-        // Calculate padding from styles
-        ComputedStyle computedStyle = new ComputedStyle(panel.getElement());
-        int paddingTop = computedStyle.getIntProperty("padding-top");
-        int paddingBottom = computedStyle.getIntProperty("padding-bottom");
-        Profiler.leave("PanelConnector.layout get values from styles");
+        int paddingTop = 0;
+        int paddingBottom = 0;
+        if (panel.hasAnyOuterPadding()) {
+            Profiler.enter("PanelConnector.layout get values from styles");
+            // Clear previously set values
+
+            style.clearPaddingTop();
+            style.clearPaddingBottom();
+            // Calculate padding from styles
+            ComputedStyle computedStyle = new ComputedStyle(panel.getElement());
+            paddingTop = computedStyle.getIntProperty("padding-top");
+            paddingBottom = computedStyle.getIntProperty("padding-bottom");
+            Profiler.leave("PanelConnector.layout get values from styles");
+        }
 
         Profiler.enter("PanelConnector.layout modify style");
         panel.captionWrap.getStyle().setMarginTop(-top, Style.Unit.PX);

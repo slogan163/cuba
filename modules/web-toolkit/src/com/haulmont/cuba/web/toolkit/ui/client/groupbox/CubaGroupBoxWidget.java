@@ -45,6 +45,7 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
     public Element captionStartDeco = DOM.createDiv();
     public Element captionEndDeco = DOM.createDiv();
     public Element captionTextNode;
+    private MarginInfo marginInfo;
 
     public CubaGroupBoxWidget(String primaryStyleName) {
         setStylePrimaryName(primaryStyleName);
@@ -190,7 +191,17 @@ public class CubaGroupBoxWidget extends VPanel implements HasEnabled {
         }
     }
 
+    public boolean hasAnyOuterPadding() {
+        return marginInfo != null
+                && marginInfo.hashCode() != 0;
+    }
+
+    public MarginInfo getMarginInfo() {
+        return marginInfo;
+    }
+
     public void setOuterMargin(MarginInfo marginInfo) {
+        this.marginInfo = marginInfo;
         if (marginInfo != null) {
             setStyleName("c-outer-margin-top", marginInfo.hasTop());
             setStyleName("c-outer-margin-right", marginInfo.hasRight());
