@@ -412,10 +412,9 @@ public class CategoryAttribute extends StandardEntity {
     }
 
     public String getLocaleName() {
+        localeName = LocaleHelper.getLocalizedName(localeNames);
         if (localeName == null) {
-            localeName = LocaleHelper.getLocalizedName(localeNames);
-            if (localeName == null)
-                localeName = name;
+            localeName = name;
         }
         return localeName;
     }
@@ -429,11 +428,9 @@ public class CategoryAttribute extends StandardEntity {
     }
 
     public String getEnumerationLocale() {
+        enumerationLocale = LocaleHelper.getLocalizedEnumeration(enumerationLocales);
         if (enumerationLocale == null) {
-            enumerationLocale = LocaleHelper.getLocalizedEnumeration(enumerationLocales);
-            if (enumerationLocale == null) {
-                enumerationLocale = enumeration;
-            }
+            enumerationLocale = enumeration;
         }
         return enumerationLocale;
     }

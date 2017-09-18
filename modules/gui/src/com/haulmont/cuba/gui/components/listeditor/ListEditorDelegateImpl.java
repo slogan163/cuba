@@ -29,9 +29,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -153,9 +151,19 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
         this.value = newValue;
         String strValue = null;
         if (newValue != null) {
-            List<String> captions = ((List<Object>) newValue).stream()
-                    .map(o -> ListEditorHelper.getValueCaption(o, itemType))
-                    .collect(Collectors.toList());
+            List<String> captions;
+            if (optionsMap != null) {
+                captions = new ArrayList<>();
+                for (Map.Entry<String, Object> entry : optionsMap.entrySet()) {
+                    if (newValue.indexOf(entry.getValue()) != -1) {
+                        captions.add(entry.getKey());
+                    }
+                }
+            } else {
+                captions = ((List<Object>) newValue).stream()
+                        .map(o -> ListEditorHelper.getValueCaption(o, itemType))
+                        .collect(Collectors.toList());
+            }
             strValue = Joiner.on(", ").join(captions);
         }
         displayValuesField.setValue(strValue);
