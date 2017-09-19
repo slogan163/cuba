@@ -252,6 +252,9 @@ public class DesktopGroupBox extends DesktopAbstractBox implements GroupBoxLayou
 
     @Override
     public MarginInfo getOuterMargin() {
+        if (outerMarginInfo == null) {
+            outerMarginInfo = new MarginInfo(false);
+        }
         return outerMarginInfo;
     }
 }
