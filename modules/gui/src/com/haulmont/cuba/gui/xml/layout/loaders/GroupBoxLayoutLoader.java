@@ -63,7 +63,7 @@ public class GroupBoxLayoutLoader extends ContainerLoader<GroupBoxLayout> {
         loadShowAsPanel(resultComponent, element);
     }
 
-    private void loadOuterMargin(GroupBoxLayout resultComponent, Element element) {
+    protected void loadOuterMargin(GroupBoxLayout resultComponent, Element element) {
         final String margin = element.attributeValue("outerMargin");
         if (!StringUtils.isEmpty(margin)) {
             MarginInfo marginInfo = parseMarginInfo(margin);
