@@ -35,11 +35,10 @@ public class LocalizedNameFrame extends AbstractFrame {
     @Inject
     protected GlobalConfig globalConfig;
 
-    protected Map<Locale, TextField> textFieldMap;
+    protected Map<Locale, TextField> textFieldMap = new HashMap<>();
 
     @Override
     public void init(Map<String, Object> params) {
-        textFieldMap = new HashMap<>();
         Map<String, Locale> map = globalConfig.getAvailableLocales();
         for (Map.Entry<String, Locale> entry : map.entrySet()) {
             localesScrollBox.add(createLocaleListComponent(entry.getValue(), entry.getKey()));
@@ -82,18 +81,14 @@ public class LocalizedNameFrame extends AbstractFrame {
     }
 
     public void clearFields() {
-        if (textFieldMap != null) {
-            for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
-                textFieldEntry.getValue().setValue("");
-            }
+        for (TextField textField : textFieldMap.values()) {
+            textField.setValue("");
         }
     }
 
-    public void setEditableFields(boolean enable) {
-        if (textFieldMap != null) {
-            for (Map.Entry<Locale, TextField> textFieldEntry : textFieldMap.entrySet()) {
-                textFieldEntry.getValue().setEditable(enable);
-            }
+    public void setEditableFields(boolean editable) {
+        for (TextField textField : textFieldMap.values()) {
+            textField.setEditable(editable);
         }
     }
 }
