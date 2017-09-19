@@ -77,7 +77,8 @@ public interface ListEditorDelegate {
     void setEditorWindowId(String windowId);
     String getEditorWindowId();
 
-    void setEditorCloseListener(ListEditor.EditorCloseListener listener);
+    void addEditorCloseListener(ListEditor.EditorCloseListener listener);
+    void removeEditorCloseListener(ListEditor.EditorCloseListener listener);
 
     void setEditorParamsSupplier(Supplier<Map<String, Object>> paramsSupplier);
     Supplier<Map<String, Object>> getEditorParamsSupplier();

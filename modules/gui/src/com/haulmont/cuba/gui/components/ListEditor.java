@@ -90,12 +90,17 @@ public interface ListEditor extends Field, Component.Focusable {
     String getEditorWindowId();
 
     /**
-     * Sets {@link com.haulmont.cuba.gui.components.ListEditor.EditorCloseListener} that invoked after editor window
+     * Adds {@link com.haulmont.cuba.gui.components.ListEditor.EditorCloseListener} that invoked after editor window
      * closing.
      *
      * @param listener listener instance
      */
-    void setEditorCloseListener(EditorCloseListener listener);
+    void addEditorCloseListener(EditorCloseListener listener);
+
+    /**
+     * @param listener listener to be removed
+     */
+    void removeEditorCloseListener(EditorCloseListener listener);
 
     /**
      * @param paramsSupplier additional params map for editor screen.

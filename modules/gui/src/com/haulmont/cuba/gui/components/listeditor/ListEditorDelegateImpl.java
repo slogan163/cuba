@@ -17,6 +17,7 @@
 package com.haulmont.cuba.gui.components.listeditor;
 
 import com.google.common.base.Joiner;
+import com.haulmont.bali.events.EventRouter;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.WindowManagerProvider;
 import com.haulmont.cuba.gui.components.*;
@@ -51,7 +52,6 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
     protected List value;
     protected List prevValue;
 
-    protected ListEditor.EditorCloseListener editorCloseListener;
     protected Supplier<Map<String, Object>> editorParamsSupplier;
     protected String editorWindowId = "list-editor-popup";
 
@@ -72,6 +72,8 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
     protected boolean displayDescription = true;
 
     protected boolean editable = true;
+
+    private EventRouter eventRouter;
 
     @PostConstruct
     public void init() {
@@ -119,9 +121,12 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
                         actualField.setValue(listEditorPopup.getValue());
                     }
 
-                    if (editorCloseListener != null) {
-                        editorCloseListener.editorClosed(new ListEditor.EditorCloseEvent(actionId, listEditorPopup));
-                    }
+                    ListEditor.EditorCloseEvent editorCloseEvent =
+                            new ListEditor.EditorCloseEvent(actionId, listEditorPopup);
+                    getEventRouter().fireEvent(
+                            ListEditor.EditorCloseListener.class,
+                            ListEditor.EditorCloseListener::editorClosed,
+                            editorCloseEvent);
                 });
             }
         });
@@ -129,6 +134,13 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
         layout.add(displayValuesField);
         layout.add(openEditorBtn);
         layout.expand(displayValuesField);
+    }
+
+    protected EventRouter getEventRouter() {
+        if (eventRouter == null) {
+            eventRouter = new EventRouter();
+        }
+        return eventRouter;
     }
 
     @Override
@@ -329,8 +341,13 @@ public class ListEditorDelegateImpl implements ListEditorDelegate {
     }
 
     @Override
-    public void setEditorCloseListener(ListEditor.EditorCloseListener listener) {
-        editorCloseListener = listener;
+    public void addEditorCloseListener(ListEditor.EditorCloseListener listener) {
+        getEventRouter().addListener(ListEditor.EditorCloseListener.class, listener);
+    }
+
+    @Override
+    public void removeEditorCloseListener(ListEditor.EditorCloseListener listener) {
+        getEventRouter().removeListener(ListEditor.EditorCloseListener.class, listener);
     }
 
     @Override

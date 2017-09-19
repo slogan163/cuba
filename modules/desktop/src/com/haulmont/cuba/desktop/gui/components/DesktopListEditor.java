@@ -213,7 +213,11 @@ public class DesktopListEditor extends DesktopAbstractField<JPanel> implements L
     }
 
     @Override
-    public void setEditorCloseListener(EditorCloseListener listener) {
+    public void addEditorCloseListener(EditorCloseListener listener) {
+    }
+
+    @Override
+    public void removeEditorCloseListener(EditorCloseListener listener) {
     }
 
     @Override

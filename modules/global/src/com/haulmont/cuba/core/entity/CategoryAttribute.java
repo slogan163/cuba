@@ -244,7 +244,7 @@ public class CategoryAttribute extends StandardEntity {
                 case BOOLEAN: return defaultBoolean;
                 case DATE: return defaultDate;
                 case STRING: return defaultString;
-                case ENUMERATION: return LocaleHelper.getEnumLocalizedValue(defaultString, enumerationLocales);
+                case ENUMERATION: return defaultString;
                 case ENTITY: return getObjectDefaultEntityId();
                 default: return null;
             }

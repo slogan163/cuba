@@ -297,7 +297,7 @@ public class AttributeEditor extends AbstractEditor<CategoryAttribute> {
             enumerationListEditor.setEditorWindowId("localizedEnumerationWindow");
             enumerationListEditor.setEditorParamsSupplier(() ->
                     ParamsMap.of("enumerationLocales", attribute.getEnumerationLocales()));
-            enumerationListEditor.setEditorCloseListener(closeEvent -> {
+            enumerationListEditor.addEditorCloseListener(closeEvent -> {
                 if (closeEvent.getActionId().equals(COMMIT_ACTION_ID)) {
                     LocalizedEnumerationWindow enumerationWindow = (LocalizedEnumerationWindow) closeEvent.getWindow();
                     attribute.setEnumerationLocales(enumerationWindow.getLocalizedValues());
