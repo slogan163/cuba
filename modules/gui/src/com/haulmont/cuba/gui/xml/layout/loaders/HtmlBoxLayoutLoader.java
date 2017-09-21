@@ -32,9 +32,8 @@ public class HtmlBoxLayoutLoader extends ContainerLoader<HtmlBoxLayout> {
     }
 
     @Override
-    protected boolean isCreateComponentLoader(Element subElement) {
-        return !subElement.getName().equals(TEMPLATE_CONTENTS_ELEMENT_NAME)
-                && super.isCreateComponentLoader(subElement);
+    protected boolean isChildElementIgnored(Element subElement) {
+        return subElement.getName().equals(TEMPLATE_CONTENTS_ELEMENT_NAME);
     }
 
     @Override
