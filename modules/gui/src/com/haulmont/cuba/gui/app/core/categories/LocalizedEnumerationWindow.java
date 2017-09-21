@@ -95,13 +95,14 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
         });
 
         addBtn.setAction(add);
-
-        initValues();
     }
 
     @Override
     public void ready() {
-        localizedFrame.setEditableFields(false);
+        initValues();
+        if (valuesMap.isEmpty()) {
+            localizedFrame.setEditableFields(false);
+        }
     }
 
     protected void initValues() {
@@ -112,14 +113,17 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
         valuesMap = values.stream()
                 .collect(Collectors.toMap(Function.identity(), o -> ListEditorHelper.getValueCaption(o, ListEditor.ItemType.STRING)));
 
-        Map<String, String> localizedValues = LocaleHelper.getLocalizedValuesMap(enumerationLocales);
+        if (!valuesMap.isEmpty()) {
+            Map<String, String> localizedValues = LocaleHelper.getLocalizedValuesMap(enumerationLocales);
 
-        for (Map.Entry<Object, String> entry : valuesMap.entrySet()) {
-            String localizedEnum = localizedValues.get(entry.getValue());
-            addValueToDatasource(entry.getKey(), localizedEnum.replace("\\r\\n", "\r\n"));
+            for (Map.Entry<Object, String> entry : valuesMap.entrySet()) {
+                String localizedEnum = localizedValues.get(entry.getValue());
+                addValueToDatasource(entry.getKey(), localizedEnum.replace("\\r\\n", "\r\n"));
+            }
+
+            enumValuesTable.setSelected(enumValuesDs.getItems().iterator().next());
+            enumValuesDs.commit();
         }
-
-        enumValuesDs.commit();
     }
 
     @Override
@@ -151,6 +155,7 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
         enumValue.setValue(value.toString());
         enumValue.setLocalizedValues(enumLocaleValues);
         enumValuesDs.addItem(enumValue);
+        enumValuesTable.setSelected(enumValue);
     }
 
     public void addEnumValue() {
