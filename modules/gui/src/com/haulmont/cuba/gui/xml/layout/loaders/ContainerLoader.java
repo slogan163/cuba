@@ -65,11 +65,17 @@ public abstract class ContainerLoader<T extends Component> extends AbstractCompo
 
         //noinspection unchecked
         for (Element subElement : (Collection<Element>) containerElement.elements()) {
-            ComponentLoader componentLoader = loader.createComponent(subElement);
-            pendingLoadComponents.add(componentLoader);
+            if (isCreateComponentLoader(subElement)) {
+                ComponentLoader componentLoader = loader.createComponent(subElement);
+                pendingLoadComponents.add(componentLoader);
 
-            container.add(componentLoader.getResultComponent());
+                container.add(componentLoader.getResultComponent());
+            }
         }
+    }
+
+    protected boolean isCreateComponentLoader(Element subElement) {
+        return true;
     }
 
     protected void loadSubComponentsAndExpand(ExpandingLayout layout, Element element) {
