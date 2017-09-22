@@ -83,13 +83,17 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
             if (e.getPrevItem() == null) { // if the first time selected
                 localizedFrame.setEditableFields(true);
             } else {
-                e.getPrevItem().setLocalizedValues(localizedFrame.getValue());
+                e.getPrevItem().setLocalizedValues(
+                        LocaleHelper.convertFromSimpleKeyLocales(e.getPrevItem().getValue(), localizedFrame.getValue())
+                );
             }
             if (e.getItem() == null) { // if item deleted and selection disappeared
                 localizedFrame.clearFields();
                 localizedFrame.setEditableFields(false);
             } else {
-                String localizedValues = e.getItem().getLocalizedValues() == null ? "" : e.getItem().getLocalizedValues();
+                String localizedValues =
+                        e.getItem().getLocalizedValues() == null ?
+                                "" : LocaleHelper.convertToSimpleKeyLocales(e.getItem().getLocalizedValues());
                 localizedFrame.setValue(localizedValues);
             }
         });
@@ -115,8 +119,7 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
         Map<String, String> localizedValues = LocaleHelper.getLocalizedValuesMap(enumerationLocales);
 
         for (Map.Entry<Object, String> entry : valuesMap.entrySet()) {
-            String localizedEnum = localizedValues.get(entry.getValue());
-            addValueToDatasource(entry.getKey(), localizedEnum.replace("\\r\\n", "\r\n"));
+            addValueToDatasource(entry.getKey(), buildLocalizedValuesForEnumValue(entry.getValue(), localizedValues));
         }
 
         enumValuesDs.commit();
@@ -130,12 +133,7 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
     public String getLocalizedValues() {
         Properties properties = new Properties();
         for (CategoryAttributeEnumValue enumValue : enumValuesDs.getItems()) {
-            if (enumValue.getLocalizedValues() == null) {
-                properties.put(enumValue.getValue(), "");
-            } else {
-                String localizedValues = enumValue.getLocalizedValues().replaceAll("\r\n", "\\\\r\\\\n");
-                properties.put(enumValue.getValue(), localizedValues);
-            }
+            properties.putAll(LocaleHelper.getLocalizedValuesMap(enumValue.getLocalizedValues()));
         }
 
         enumerationLocales = LocaleHelper.convertPropertiesToString(properties);
@@ -153,6 +151,27 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
         enumValuesDs.addItem(enumValue);
     }
 
+    protected String buildLocalizedValuesForEnumValue(String enumValue, Map<String, String> localizedValues) {
+        StringBuilder sb = new StringBuilder();
+        List<String> values = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : localizedValues.entrySet()) {
+            String key = entry.getKey();
+            if (key.contains(enumValue)) {
+                sb.append(key)
+                  .append("=")
+                  .append(entry.getValue())
+                  .append("\r\n");
+
+                values.add(sb.toString());
+                sb.delete(0, sb.length());
+            }
+        }
+        values.sort(Comparator.reverseOrder());
+
+        return String.join("", values);
+    }
+
     public void addEnumValue() {
         Object value = valueField.getValue();
         if (value != null) {
@@ -167,7 +186,9 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
     public void commit() {
         if (!enumValuesTable.getSelected().isEmpty()) {
             CategoryAttributeEnumValue enumValue = enumValuesTable.getSelected().iterator().next();
-            enumValue.setLocalizedValues(localizedFrame.getValue());
+            enumValue.setLocalizedValues(
+                    LocaleHelper.convertFromSimpleKeyLocales(enumValue.getValue(), localizedFrame.getValue())
+            );
         }
         enumValuesDs.commit();
 

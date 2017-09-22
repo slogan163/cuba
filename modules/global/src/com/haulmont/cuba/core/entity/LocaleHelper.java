@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class LocaleHelper {
@@ -62,7 +63,7 @@ public final class LocaleHelper {
         return Collections.emptyMap();
     }
 
-    public static String getLocalizedEnumeration(String localeBundle) {
+    public static String getLocalizedEnumeration(String enumerationValues, String localeBundle) {
         String result = null;
         if (StringUtils.isNotEmpty(localeBundle)) {
             Properties localeProperties = loadProperties(localeBundle);
@@ -76,17 +77,54 @@ public final class LocaleHelper {
 
                 List<String> enumValues = new ArrayList<>();
 
-                for (Map.Entry<Object, Object> entry : localeProperties.entrySet()) {
-                    String enumValue = (String) entry.getKey();
-                    String localizedEnumValues = ((String) entry.getValue()).replaceAll("\\\\r\\\\n", "\r\n");
-                    Map<String, String> localizedEnumValuesMap = LocaleHelper.getLocalizedValuesMap(localizedEnumValues);
-
-                    enumValues.add(localizedEnumValuesMap.getOrDefault(key, enumValue));
+                String[] enumerationValuesArray = enumerationValues.split(",");
+                Map<String, String> localizedValuesMap = LocaleHelper.getLocalizedValuesMap(localeBundle);
+                for (String value : enumerationValuesArray) {
+                    String resultValue = localizedValuesMap.getOrDefault(key + "/" + value, value);
+                    enumValues.add(resultValue);
                 }
                 result = Joiner.on(",").join(enumValues);
             }
         }
         return result;
+    }
+
+    public static String convertToSimpleKeyLocales(String localeBundle) {
+        Pattern pattern = Pattern.compile("(?m)^.*/.*=");
+        Matcher matcher = pattern.matcher(new StringBuffer(localeBundle));
+
+        StringBuffer buffer = new StringBuffer();
+        StringBuilder group = new StringBuilder();
+
+        while (matcher.find()) {
+            group.append(matcher.group());
+            group.delete(group.indexOf("/"), group.indexOf("="));
+            matcher.appendReplacement(buffer, group.toString());
+            group.delete(0, group.length());
+        }
+
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    public static String convertFromSimpleKeyLocales(String enumValue, String localeBundle) {
+        List<String> strings = Arrays.asList(localeBundle.split("\r\n"));
+        strings.sort(Comparator.reverseOrder());
+        localeBundle = String.join("\r\n", strings);
+
+        Pattern pattern = Pattern.compile("(?m)^.*=");
+        Matcher matcher = pattern.matcher(new StringBuffer(localeBundle));
+
+        String keyLocale;
+        StringBuffer buffer = new StringBuffer();
+        while (matcher.find()) {
+            keyLocale = matcher.group();
+            keyLocale = keyLocale.substring(0, keyLocale.length() - 1);
+            matcher.appendReplacement(buffer, keyLocale + "/" + enumValue + "=");
+        }
+        matcher.appendTail(buffer);
+        buffer.append("\r\n");
+        return buffer.toString();
     }
 
     public static String getEnumLocalizedValue(String enumValue, String localeBundle) {
@@ -99,11 +137,16 @@ public final class LocaleHelper {
         }
 
         Map<String, String> map = getLocalizedValuesMap(localeBundle);
-        String locales = map.getOrDefault(enumValue, "");
-        locales = locales.replaceAll("\\\\r\\\\n", "\r\n");
-        String result = getLocalizedName(locales);
 
-        return result == null ? enumValue : result;
+        Locale locale = AppBeans.get(UserSessionSource.class).getLocale();
+        String key = locale.getLanguage();
+        if (StringUtils.isNotEmpty(locale.getCountry())) {
+            key += "_" + locale.getCountry();
+        }
+
+        String result = map.getOrDefault(key + "/" + enumValue, "");
+
+        return Objects.equals(result, "") ? enumValue : result;
     }
 
     public static String convertPropertiesToString(Properties properties) {
