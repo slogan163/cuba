@@ -90,41 +90,28 @@ public final class LocaleHelper {
     }
 
     public static String convertToSimpleKeyLocales(String localeBundle) {
-        Pattern pattern = Pattern.compile("(?m)^.*/.*=");
-        Matcher matcher = pattern.matcher(new StringBuffer(localeBundle));
-
-        StringBuffer buffer = new StringBuffer();
-        StringBuilder group = new StringBuilder();
-
-        while (matcher.find()) {
-            group.append(matcher.group());
-            group.delete(group.indexOf("/"), group.indexOf("="));
-            matcher.appendReplacement(buffer, group.toString());
-            group.delete(0, group.length());
+        Properties result = new Properties();
+        Properties properties = loadProperties(localeBundle);
+        if (properties != null) {
+            for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                String key = (String) entry.getKey();
+                key = key.substring(0, key.indexOf("/"));
+                result.put(key, entry.getValue());
+            }
         }
-
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        return convertPropertiesToString(result);
     }
 
     public static String convertFromSimpleKeyLocales(String enumValue, String localeBundle) {
-        List<String> strings = Arrays.asList(localeBundle.split("\r\n"));
-        strings.sort(Comparator.reverseOrder());
-        localeBundle = String.join("\r\n", strings);
-
-        Pattern pattern = Pattern.compile("(?m)^.*=");
-        Matcher matcher = pattern.matcher(new StringBuffer(localeBundle));
-
-        String keyLocale;
-        StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            keyLocale = matcher.group();
-            keyLocale = keyLocale.substring(0, keyLocale.length() - 1);
-            matcher.appendReplacement(buffer, keyLocale + "/" + enumValue + "=");
+        Properties result = new Properties();
+        Properties properties = loadProperties(localeBundle);
+        if (properties != null) {
+            for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                String key = (String) entry.getKey();
+                result.put(key + "/" + enumValue, entry.getValue());
+            }
         }
-        matcher.appendTail(buffer);
-        buffer.append("\r\n");
-        return buffer.toString();
+        return convertPropertiesToString(result);
     }
 
     public static String getEnumLocalizedValue(String enumValue, String localeBundle) {

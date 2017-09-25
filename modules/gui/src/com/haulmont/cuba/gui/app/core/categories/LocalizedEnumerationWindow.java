@@ -83,9 +83,15 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
             if (e.getPrevItem() == null) { // if the first time selected
                 localizedFrame.setEditableFields(true);
             } else {
-                e.getPrevItem().setLocalizedValues(
-                        LocaleHelper.convertFromSimpleKeyLocales(e.getPrevItem().getValue(), localizedFrame.getValue())
-                );
+                CategoryAttributeEnumValue prevItem = e.getPrevItem();
+
+                String changedValues = LocaleHelper.convertFromSimpleKeyLocales(prevItem.getValue(), localizedFrame.getValue());
+                Map<String, String> changedValuesMap = LocaleHelper.getLocalizedValuesMap(changedValues);
+                Map<String, String> itemValuesMap = LocaleHelper.getLocalizedValuesMap(prevItem.getLocalizedValues());
+
+                if (!itemValuesMap.equals(changedValuesMap)) {
+                    prevItem.setLocalizedValues(changedValues);
+                }
             }
             if (e.getItem() == null) { // if item deleted and selection disappeared
                 localizedFrame.clearFields();
@@ -152,24 +158,15 @@ public class LocalizedEnumerationWindow extends AbstractWindow implements ListEd
     }
 
     protected String buildLocalizedValuesForEnumValue(String enumValue, Map<String, String> localizedValues) {
-        StringBuilder sb = new StringBuilder();
-        List<String> values = new ArrayList<>();
-
+        Properties result = new Properties();
         for (Map.Entry<String, String> entry : localizedValues.entrySet()) {
             String key = entry.getKey();
-            if (key.contains(enumValue)) {
-                sb.append(key)
-                  .append("=")
-                  .append(entry.getValue())
-                  .append("\r\n");
-
-                values.add(sb.toString());
-                sb.delete(0, sb.length());
+            key = key.substring(key.indexOf("/") + 1);
+            if (key.equals(enumValue)) {
+                result.put(entry.getKey(), entry.getValue());
             }
         }
-        values.sort(Comparator.reverseOrder());
-
-        return String.join("", values);
+        return LocaleHelper.convertPropertiesToString(result);
     }
 
     public void addEnumValue() {
