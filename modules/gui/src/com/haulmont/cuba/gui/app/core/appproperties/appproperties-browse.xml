@@ -48,6 +48,7 @@
                 <button action="paramsTable.editValue"/>
                 <button id="exportBtn" invoke="exportAsSql" icon="icons/download.png" description="mainMsg://actions.Export"/>
             </buttonsPanel>
+            <rowsCount/>
             <actions>
                 <action id="editValue" invoke="editValue" enable="false"
                         caption="mainMsg://actions.Edit" icon="theme://actions.Edit.icon"/>
