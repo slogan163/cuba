@@ -170,6 +170,7 @@ public class ScheduledTaskEditor extends AbstractEditor<ScheduledTask> {
         beanNameField.setOptionsList(new ArrayList<>(availableBeans.keySet()));
         beanNameField.addValueChangeListener(e -> {
             methodNameField.setValue(null);
+            hide(methodParamsBox);
             if (e.getValue() == null) {
                 methodNameField.setOptionsList(Collections.emptyList());
             } else {
