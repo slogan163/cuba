@@ -190,7 +190,7 @@ public class ScheduledTaskEditor extends AbstractEditor<ScheduledTask> {
             clearMethodParamsGrid();
             if (e.getValue() != null) {
                 createMethodParamsGrid((MethodInfo) e.getValue());
-                if(methodParamsBox.getComponents().size() > 1){
+                if (methodParamsBox.getComponents().size() > 1) {
                     show(methodParamsBox);
                 } else {
                     hide(methodParamsBox);
