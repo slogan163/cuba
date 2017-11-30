@@ -18,6 +18,9 @@ package com.haulmont.cuba.core.app;
 
 import java.util.Map;
 
+/**
+ * Provides sending exception report email functionality.
+ */
 public interface ExceptionReportService {
 
     String NAME = "cuba_ExceptionReportService";
@@ -25,7 +28,7 @@ public interface ExceptionReportService {
     /**
      * Send the exception report email.
      *
-     * @param binding      - map that contains values to bind in email template.
+     * @param binding      map that contains values to bind in email template.
      * @param supportEmail email address to send.
      */
     void sendExceptionReport(String supportEmail, Map<String, Object> binding);
