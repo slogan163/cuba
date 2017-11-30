@@ -28,8 +28,8 @@ public interface ExceptionReportService {
     /**
      * Send the exception report email.
      *
-     * @param binding      map that contains values to bind in email template.
-     * @param supportEmail email address to send.
+     * @param binding      map that contains values to bind in email template
+     * @param supportEmail email address to send
      */
     void sendExceptionReport(String supportEmail, Map<String, Object> binding);
 }

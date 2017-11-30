@@ -78,7 +78,7 @@ public class ExceptionReportServiceBean implements ExceptionReportService {
     public String getExceptionReportBody(Map<String, Object> binding) {
         String bodyTemplate = resourceService.getResourceAsString(serverConfig.getExceptionReportEmailBodyTemplate());
         if (bodyTemplate == null) {
-            throw new IllegalStateException("Not found body template for send exception report operation");
+            throw new IllegalStateException("Unable to find template of exception report body");
         }
         //noinspection UnnecessaryLocalVariable
         String reportBody = getTemplate(binding, bodyTemplate);
@@ -89,7 +89,7 @@ public class ExceptionReportServiceBean implements ExceptionReportService {
     public String getExceptionReportSubject(Map<String, Object> binding) {
         String subjectTemplate = resourceService.getResourceAsString(serverConfig.getExceptionReportEmailSubjectTemplate());
         if (subjectTemplate == null) {
-            throw new IllegalStateException("Not found subject template for send exception report operation");
+            throw new IllegalStateException("Unable to find template of exception report subject");
         }
         //noinspection UnnecessaryLocalVariable
         String subjectBody = getTemplate(binding, subjectTemplate);
