@@ -60,10 +60,16 @@ public interface ServerConfig extends Config {
     @Default("/com/haulmont/cuba/security/app/email/reset-password-subject.gsp")
     String getResetPasswordEmailSubjectTemplate();
 
+    /**
+     * @return Path to the exception report email body template.
+     */
     @Property("cuba.email.exceptionReportEmailTemplateBody")
     @Default("/com/haulmont/cuba/core/app/exceptionemail/exception-report-template-body.gsp")
     String getExceptionReportEmailBodyTemplate();
 
+    /**
+     * @return Path to the exception report email subject template.
+     */
     @Property("cuba.email.exceptionReportEmailTemplateSubject")
     @Default("/com/haulmont/cuba/core/app/exceptionemail/exception-report-template-subject.gsp")
     String getExceptionReportEmailSubjectTemplate();

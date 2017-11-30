@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service(ExceptionReportService.NAME)
@@ -49,13 +50,16 @@ public class ExceptionReportServiceBean implements ExceptionReportService {
     protected UserSessionSource userSessionSource;
 
     @Inject
-    protected EmailService emailService;
+    protected EmailerAPI emailer;
 
     @Override
-    public void sendExceptionReport(Map<String, Object> bodyMap, Map<String, Object> subjectMap, String supportEmail) {
+    public void sendExceptionReport(String supportEmail, Map<String, Object> binding) {
         try {
-            String body = getExceptionReportBody(bodyMap);
-            String subject = getExceptionReportSubject(subjectMap);
+            Map<String, Object> map = new HashMap<>();
+            map.putAll(binding);
+
+            String body = getExceptionReportBody(map);
+            String subject = getExceptionReportSubject(map);
 
             EmailInfo info = new EmailInfo(supportEmail, subject, body);
 
@@ -64,10 +68,10 @@ public class ExceptionReportServiceBean implements ExceptionReportService {
                 info.setFrom(user.getEmail());
             }
 
-            emailService.sendEmail(info);
-        } catch (Throwable e) {
+            emailer.sendEmail(info);
+        } catch (Exception e) {
             log.error("Error sending exception report", e);
-            throw new RuntimeException("Error sending exception report", e);
+            throw new RuntimeException("Error sending exception report");
         }
     }
 

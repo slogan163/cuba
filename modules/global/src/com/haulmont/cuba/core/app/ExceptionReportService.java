@@ -22,5 +22,11 @@ public interface ExceptionReportService {
 
     String NAME = "cuba_ExceptionReportService";
 
-    void sendExceptionReport(Map<String, Object> bodyMap, Map<String, Object> subjectMap, String supportEmail);
+    /**
+     * Send the exception report email.
+     *
+     * @param binding      - map that contains values to bind in email template.
+     * @param supportEmail email address to send.
+     */
+    void sendExceptionReport(String supportEmail, Map<String, Object> binding);
 }

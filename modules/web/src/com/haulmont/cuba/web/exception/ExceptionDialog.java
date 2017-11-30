@@ -16,6 +16,7 @@
  */
 package com.haulmont.cuba.web.exception;
 
+import com.haulmont.bali.util.ParamsMap;
 import com.haulmont.cuba.client.ClientConfig;
 import com.haulmont.cuba.core.app.EmailService;
 import com.haulmont.cuba.core.app.ExceptionReportService;
@@ -362,19 +363,17 @@ public class ExceptionDialog extends CubaWindow {
             String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeSource.currentTimestamp());
             message = message.replace("\n", "<br/>");
 
-            Map<String, Object> bodyMap = new HashMap<>();
-            bodyMap.put("timestamp", date);
-            bodyMap.put("errorMessage", message);
-            bodyMap.put("stacktrace", stackTrace);
-
-            Map<String, Object> subjectMap = new HashMap<>();
-            subjectMap.put("systemId", clientConfig.getSystemID());
-            subjectMap.put("userLogin", user.getLogin());
-
-            exceptionReport.sendExceptionReport(bodyMap, subjectMap, clientConfig.getSupportEmail());
+            exceptionReport.sendExceptionReport(clientConfig.getSupportEmail(), ParamsMap.of(
+                    "timestamp", date,
+                    "errorMessage", message,
+                    "stacktrace", stackTrace,
+                    "systemId", clientConfig.getSystemID(),
+                    "userLogin", user.getLogin()
+            ));
 
             Notification.show(messages.getMainMessage("exceptionDialog.emailSent"));
         } catch (Throwable e) {
+            log.error("Error sending exception report", e);
             Notification.show(messages.getMainMessage("exceptionDialog.emailSendingErr"));
         }
     }
