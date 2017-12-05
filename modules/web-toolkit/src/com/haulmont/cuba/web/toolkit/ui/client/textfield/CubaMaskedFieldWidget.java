@@ -340,11 +340,30 @@ public class CubaMaskedFieldWidget extends VTextField {
     public void handleInput() {
         String newText = getText();
         if (newText.length() < valueBuilder.length()) {
-            super.setText(valueBuilder.toString());
-            setCursorPos(getNextPos(valueBuilder.length()));
+            int cursorPos = getCursorPos();
+            if (cursorPos == 0 && newText.length() == 0) {
+                valueBuilder.replace(0, valueBuilder.length(), nullRepresentation);
+                super.setText(nullRepresentation);
+                setCursorPos(getPreviousPos(0));
+            } else {
+                int cutLength = valueBuilder.length() - newText.length();
+
+                StringBuilder resultValue = new StringBuilder(valueBuilder.substring(0, cursorPos));
+                resultValue.append(nullRepresentation.substring(cursorPos, cursorPos + cutLength));
+                resultValue.append(valueBuilder.substring(cursorPos + cutLength));
+
+                valueBuilder.replace(0, valueBuilder.length(), resultValue.toString());
+                super.setText(resultValue.toString());
+                setCursorPos(cursorPos);
+            }
         } else {
             int pasteLength = newText.length() - valueBuilder.length();
             int pasteStart = getCursorPos() - pasteLength;
+
+            if (newText.length() == valueBuilder.length()) {
+                pasteStart = 0;
+                pasteLength = valueBuilder.length();
+            }
 
             StringBuilder maskedPart = maskValue(newText.substring(pasteStart, pasteStart + pasteLength), pasteStart, pasteStart + pasteLength);
             valueBuilder.replace(pasteStart, pasteStart + maskedPart.length(), maskedPart.toString());
