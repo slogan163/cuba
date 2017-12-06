@@ -327,7 +327,7 @@ public class CubaMaskedFieldWidget extends VTextField {
         var temp = this;  // hack to hold on to 'this' reference
 
         var listener = $entry(function (e) {
-            temp.@com.haulmont.cuba.web.toolkit.ui.client.textfield.CubaMaskedFieldWidget::handleInput()();
+            temp.@com.haulmont.cuba.web.toolkit.ui.client.textfield.CubaMaskedFieldWidget::handleInput(*)(e.inputType);
         });
 
         if (elementID.addEventListener) {
@@ -337,39 +337,58 @@ public class CubaMaskedFieldWidget extends VTextField {
         }
     }-*/;
 
-    public void handleInput() {
+    public void handleInput(String inputType) {
         String newText = getText();
-        if (newText.length() < valueBuilder.length()) {
-            int cursorPos = getCursorPos();
-            if (cursorPos == 0 && newText.length() == 0) {
-                valueBuilder.replace(0, valueBuilder.length(), nullRepresentation);
-                super.setText(nullRepresentation);
-                setCursorPos(getPreviousPos(0));
-            } else {
-                int cutLength = valueBuilder.length() - newText.length();
-
-                StringBuilder resultValue = new StringBuilder(valueBuilder.substring(0, cursorPos));
-                resultValue.append(nullRepresentation.substring(cursorPos, cursorPos + cutLength));
-                resultValue.append(valueBuilder.substring(cursorPos + cutLength));
-
-                valueBuilder.replace(0, valueBuilder.length(), resultValue.toString());
-                super.setText(resultValue.toString());
-                setCursorPos(cursorPos);
+        if (inputType != null) {
+            switch (inputType) {
+                case "deleteByCut":
+                    handleCut(newText);
+                    break;
+                case "insertFromPaste":
+                    handlePaste(newText);
+                    break;
             }
         } else {
-            int pasteLength = newText.length() - valueBuilder.length();
-            int pasteStart = getCursorPos() - pasteLength;
-
-            if (newText.length() == valueBuilder.length()) {
-                pasteStart = 0;
-                pasteLength = valueBuilder.length();
+            if (newText.length() < valueBuilder.length()) {
+                handleCut(newText);
+            } else {
+                handlePaste(newText);
             }
-
-            StringBuilder maskedPart = maskValue(newText.substring(pasteStart, pasteStart + pasteLength), pasteStart, pasteStart + pasteLength);
-            valueBuilder.replace(pasteStart, pasteStart + maskedPart.length(), maskedPart.toString());
-            super.setText(valueBuilder.toString());
-            setCursorPos(getNextPos(pasteStart + maskedPart.length() - 1));
         }
+    }
+
+    protected void handleCut(String newText) {
+        int cursorPos = getCursorPos();
+        if (cursorPos == 0 && newText.length() == 0) {
+            valueBuilder.replace(0, valueBuilder.length(), nullRepresentation);
+            super.setText(nullRepresentation);
+            setCursorPos(getPreviousPos(0));
+        } else {
+            int cutLength = valueBuilder.length() - newText.length();
+
+            StringBuilder resultValue = new StringBuilder(valueBuilder.substring(0, cursorPos));
+            resultValue.append(nullRepresentation.substring(cursorPos, cursorPos + cutLength));
+            resultValue.append(valueBuilder.substring(cursorPos + cutLength));
+
+            valueBuilder.replace(0, valueBuilder.length(), resultValue.toString());
+            super.setText(resultValue.toString());
+            setCursorPos(cursorPos);
+        }
+    }
+
+    protected void handlePaste(String newText) {
+        int pasteLength = newText.length() - valueBuilder.length();
+        int pasteStart = getCursorPos() - pasteLength;
+
+        if (newText.length() == valueBuilder.length()) {
+            pasteStart = 0;
+            pasteLength = valueBuilder.length();
+        }
+
+        StringBuilder maskedPart = maskValue(newText.substring(pasteStart, pasteStart + pasteLength), pasteStart, pasteStart + pasteLength);
+        valueBuilder.replace(pasteStart, pasteStart + maskedPart.length(), maskedPart.toString());
+        super.setText(valueBuilder.toString());
+        setCursorPos(getNextPos(pasteStart + maskedPart.length() - 1));
     }
 
     protected void setRawCursorPosition(int pos) {
