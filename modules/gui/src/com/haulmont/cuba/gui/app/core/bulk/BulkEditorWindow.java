@@ -20,6 +20,9 @@ package com.haulmont.cuba.gui.app.core.bulk;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.chile.core.model.MetaProperty;
 import com.haulmont.chile.core.model.MetaPropertyPath;
+import com.haulmont.cuba.core.app.dynamicattributes.DynamicAttributes;
+import com.haulmont.cuba.core.app.dynamicattributes.DynamicAttributesUtils;
+import com.haulmont.cuba.core.entity.CategoryAttribute;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.gui.AppConfig;
@@ -98,6 +101,8 @@ public class BulkEditorWindow extends AbstractWindow {
 
     @WindowParam
     protected List<Field.Validator> modelValidators;
+
+    protected DynamicAttributes dynamicAttributes = AppBeans.get(DynamicAttributes.NAME);
 
     protected Pattern excludeRegex;
 
@@ -445,6 +450,19 @@ public class BulkEditorWindow extends AbstractWindow {
                 }
             }
         }
+
+        List<CategoryAttribute> categoryAttributes = new ArrayList<>(dynamicAttributes.getAttributesForMetaClass(metaClass));
+        if (categoryAttributes.isEmpty()) {
+            return managedFields;
+        }
+
+        for (CategoryAttribute attribute : categoryAttributes) {
+            MetaPropertyPath metaPropertyPath = DynamicAttributesUtils.getMetaPropertyPath(metaClass, attribute);
+            String propertyCaption = attribute.getLocaleName();
+
+            managedFields.add(new ManagedField(metaPropertyPath.getMetaProperty().getName(), metaPropertyPath.getMetaProperty(),
+                    propertyCaption, null));
+        }
         return managedFields;
     }
 
@@ -566,6 +584,7 @@ public class BulkEditorWindow extends AbstractWindow {
         lc.setSoftDeletion(false);
         lc.setQuery(query);
         lc.setView(view);
+        lc.setLoadDynamicAttributes(true);
 
         return dataSupplier.loadList(lc);
     }
