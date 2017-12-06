@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CubaMaskedFieldWidget extends VTextField {
 
@@ -347,6 +349,8 @@ public class CubaMaskedFieldWidget extends VTextField {
                 case "insertFromPaste":
                     handlePaste(newText);
                     break;
+                default:
+                    Logger.getLogger("CubaMaskedFieldWidget").log(Level.WARNING, "Unknown inputType");
             }
         } else {
             if (newText.length() < valueBuilder.length()) {
