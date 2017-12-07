@@ -37,6 +37,7 @@ public class DesktopBulkEditor extends DesktopButton implements BulkEditor {
     protected Map<String, Field.Validator> fieldValidators;
     protected List<Field.Validator> modelValidators;
     protected ConstraintOperationType constraintOperationType;
+    protected Boolean loadDynamicAttributes;
 
     public DesktopBulkEditor() {
         setCaption(null);
@@ -158,5 +159,15 @@ public class DesktopBulkEditor extends DesktopButton implements BulkEditor {
     @Override
     public ConstraintOperationType getConstraintOperationType() {
         return constraintOperationType;
+    }
+
+    @Override
+    public void setLoadDynamicAttributes(boolean loadDynamicAttributes) {
+        this.loadDynamicAttributes = loadDynamicAttributes;
+    }
+
+    @Override
+    public Boolean isLoadDynamicAttributes() {
+        return loadDynamicAttributes;
     }
 }

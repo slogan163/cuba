@@ -76,6 +76,9 @@ public class BulkEditorWindow extends AbstractWindow {
     protected Security security;
 
     @Inject
+    protected DynamicAttributes dynamicAttributes;
+
+    @Inject
     protected BoxLayout contentPane;
 
     @Inject
@@ -97,12 +100,13 @@ public class BulkEditorWindow extends AbstractWindow {
     protected String exclude;
 
     @WindowParam
+    protected Boolean loadDynamicAttributes;
+
+    @WindowParam
     protected Map<String, Field.Validator> fieldValidators;
 
     @WindowParam
     protected List<Field.Validator> modelValidators;
-
-    protected DynamicAttributes dynamicAttributes = AppBeans.get(DynamicAttributes.NAME);
 
     protected Pattern excludeRegex;
 
@@ -451,17 +455,19 @@ public class BulkEditorWindow extends AbstractWindow {
             }
         }
 
-        List<CategoryAttribute> categoryAttributes = new ArrayList<>(dynamicAttributes.getAttributesForMetaClass(metaClass));
-        if (categoryAttributes.isEmpty()) {
-            return managedFields;
-        }
+        if (loadDynamicAttributes != null ? loadDynamicAttributes : false) {
+            List<CategoryAttribute> categoryAttributes = (List<CategoryAttribute>) dynamicAttributes.getAttributesForMetaClass(metaClass);
+            if (!categoryAttributes.isEmpty()) {
+                for (CategoryAttribute attribute : categoryAttributes) {
+                    MetaPropertyPath metaPropertyPath = DynamicAttributesUtils.getMetaPropertyPath(metaClass, attribute);
+                    String propertyCaption = attribute.getLocaleName();
 
-        for (CategoryAttribute attribute : categoryAttributes) {
-            MetaPropertyPath metaPropertyPath = DynamicAttributesUtils.getMetaPropertyPath(metaClass, attribute);
-            String propertyCaption = attribute.getLocaleName();
-
-            managedFields.add(new ManagedField(metaPropertyPath.getMetaProperty().getName(), metaPropertyPath.getMetaProperty(),
-                    propertyCaption, null));
+                    if (isPermitted(metaClass, metaPropertyPath.getMetaProperty())) {
+                        managedFields.add(new ManagedField(metaPropertyPath.getMetaProperty().getName(), metaPropertyPath.getMetaProperty(),
+                                propertyCaption, null));
+                    }
+                }
+            }
         }
         return managedFields;
     }
@@ -584,7 +590,10 @@ public class BulkEditorWindow extends AbstractWindow {
         lc.setSoftDeletion(false);
         lc.setQuery(query);
         lc.setView(view);
-        lc.setLoadDynamicAttributes(true);
+
+        if (loadDynamicAttributes != null) {
+            lc.setLoadDynamicAttributes(loadDynamicAttributes);
+        }
 
         return dataSupplier.loadList(lc);
     }
