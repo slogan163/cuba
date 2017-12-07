@@ -37,7 +37,7 @@ public class WebBulkEditor extends WebButton implements BulkEditor {
     protected Map<String, Field.Validator> fieldValidators;
     protected List<Field.Validator> modelValidators;
     protected ConstraintOperationType constraintOperationType;
-    protected Boolean loadDynamicAttributes;
+    protected boolean loadDynamicAttributes = true;
 
     @Override
     public WindowManager.OpenType getOpenType() {
@@ -101,10 +101,6 @@ public class WebBulkEditor extends WebButton implements BulkEditor {
                 bulkEditAction.setModelValidators(modelValidators);
             }
 
-            if (loadDynamicAttributes != null) {
-                bulkEditAction.setLoadDynamicAttributes(loadDynamicAttributes);
-            }
-
             if (caption != null) {
                 bulkEditAction.setCaption(caption);
             }
@@ -117,6 +113,7 @@ public class WebBulkEditor extends WebButton implements BulkEditor {
             bulkEditAction.setEnabled(enabled);
             bulkEditAction.setVisible(visible);
             bulkEditAction.setConstraintOperationType(constraintOperationType);
+            bulkEditAction.setLoadDynamicAttributes(loadDynamicAttributes);
 
             listComponent.addAction(bulkEditAction);
         }
@@ -167,7 +164,7 @@ public class WebBulkEditor extends WebButton implements BulkEditor {
     }
 
     @Override
-    public Boolean isLoadDynamicAttributes() {
+    public boolean isLoadDynamicAttributes() {
         return loadDynamicAttributes;
     }
 }

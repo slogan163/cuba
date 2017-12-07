@@ -45,7 +45,7 @@ public interface BulkEditor extends Component, Component.HasCaption, Component.B
     void setModelValidators(List<Field.Validator> modelValidators);
 
     void setLoadDynamicAttributes(boolean loadDynamicAttributes);
-    Boolean isLoadDynamicAttributes();
+    boolean isLoadDynamicAttributes();
     /**
      * Sets the given <code>constraintOperationType</code> to the BulkEditAction.
      *

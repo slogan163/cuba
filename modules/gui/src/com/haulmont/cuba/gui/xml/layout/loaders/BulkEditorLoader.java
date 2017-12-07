@@ -109,7 +109,7 @@ public class BulkEditorLoader extends AbstractComponentLoader<BulkEditor> {
 
         String loadDynamicAttributes = element.attributeValue("loadDynamicAttributes");
         if (StringUtils.isNotEmpty(loadDynamicAttributes)) {
-            resultComponent.setLoadDynamicAttributes(Boolean.valueOf(loadDynamicAttributes));
+            resultComponent.setLoadDynamicAttributes(Boolean.parseBoolean(loadDynamicAttributes));
         }
 
         context.addPostInitTask((context1, window) -> {

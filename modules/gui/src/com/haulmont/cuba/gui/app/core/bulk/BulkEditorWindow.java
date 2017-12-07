@@ -100,7 +100,7 @@ public class BulkEditorWindow extends AbstractWindow {
     protected String exclude;
 
     @WindowParam
-    protected Boolean loadDynamicAttributes;
+    protected boolean loadDynamicAttributes = true;
 
     @WindowParam
     protected Map<String, Field.Validator> fieldValidators;
@@ -455,7 +455,7 @@ public class BulkEditorWindow extends AbstractWindow {
             }
         }
 
-        if (loadDynamicAttributes != null ? loadDynamicAttributes : false) {
+        if (loadDynamicAttributes) {
             List<CategoryAttribute> categoryAttributes = (List<CategoryAttribute>) dynamicAttributes.getAttributesForMetaClass(metaClass);
             if (!categoryAttributes.isEmpty()) {
                 for (CategoryAttribute attribute : categoryAttributes) {
@@ -590,10 +590,7 @@ public class BulkEditorWindow extends AbstractWindow {
         lc.setSoftDeletion(false);
         lc.setQuery(query);
         lc.setView(view);
-
-        if (loadDynamicAttributes != null) {
-            lc.setLoadDynamicAttributes(loadDynamicAttributes);
-        }
+        lc.setLoadDynamicAttributes(loadDynamicAttributes);
 
         return dataSupplier.loadList(lc);
     }
