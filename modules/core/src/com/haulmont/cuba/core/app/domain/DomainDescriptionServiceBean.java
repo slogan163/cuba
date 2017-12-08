@@ -74,7 +74,7 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
             for (MetaClassRepresentation.MetaClassRepProperty metaProperty : rep.getProperties()) {
                 TemplateHashModel enumValues = metaProperty.getEnumValues();
-                if (enumValues!=null) enums.add(enumValues);
+                if (enumValues != null) addEnumIfNotContains(enums, enumValues);
             }
 
         }
@@ -106,6 +106,25 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
         String template = resources.getResourceAsString("/com/haulmont/cuba/core/app/domain/DomainDescription.ftl");
         return TemplateHelper.processTemplate(template, values);
+    }
+
+    protected void addEnumIfNotContains(List<TemplateHashModel> enums, TemplateHashModel model) {
+        boolean isNotContains = true;
+        for (TemplateHashModel modelList : enums) {
+            try {
+                String modelListName = modelList.get("name").toString();
+                String modelName = model.get("name").toString();
+                if (modelListName.equals(modelName)) {
+                    isNotContains = false;
+                    break;
+                }
+            } catch (TemplateModelException e) {
+                throw new IllegalArgumentException("Can not get TemplateModel by name");
+            }
+        }
+        if (isNotContains) {
+            enums.add(model);
+        }
     }
 
     private boolean readPermitted(MetaClass metaClass) {
