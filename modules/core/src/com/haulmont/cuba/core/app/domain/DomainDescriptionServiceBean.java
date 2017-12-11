@@ -53,6 +53,7 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
         List<MetaClassRepresentation> classes = new ArrayList<>();
         List<TemplateHashModel> enums = new ArrayList<>();
+        HashSet<String> addedEnums = new HashSet<>();
 
         Set<MetaClass> metas = new HashSet<>(metadataTools.getAllPersistentMetaClasses());
         metas.addAll(metadataTools.getAllEmbeddableMetaClasses());
@@ -74,7 +75,7 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
             for (MetaClassRepresentation.MetaClassRepProperty metaProperty : rep.getProperties()) {
                 TemplateHashModel enumValues = metaProperty.getEnumValues();
-                if (enumValues != null) addEnumIfNotContains(enums, enumValues);
+                if (enumValues != null) addEnumIfNotContains(addedEnums, enums, enumValues);
             }
 
         }
@@ -108,23 +109,19 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
         return TemplateHelper.processTemplate(template, values);
     }
 
-    protected void addEnumIfNotContains(List<TemplateHashModel> enums, TemplateHashModel model) {
-        boolean isNotContains = true;
-        for (TemplateHashModel modelList : enums) {
-            try {
-                String modelListName = modelList.get("name").toString();
-                String modelName = model.get("name").toString();
-                if (modelListName.equals(modelName)) {
-                    isNotContains = false;
-                    break;
-                }
-            } catch (TemplateModelException e) {
-                throw new IllegalArgumentException("Can not get TemplateModel by name");
+    protected void addEnumIfNotContains(HashSet<String> addedEnums, List<TemplateHashModel> enums, TemplateHashModel model) {
+        try {
+            String enumClass = model.get("name").toString();
+            if (addedEnums.contains(enumClass)) {
+                return;
+            } else {
+                addedEnums.add(enumClass);
             }
+        } catch (TemplateModelException e) {
+            throw new IllegalArgumentException("Can not get TemplateModel by name");
         }
-        if (isNotContains) {
-            enums.add(model);
-        }
+
+        enums.add(model);
     }
 
     private boolean readPermitted(MetaClass metaClass) {
