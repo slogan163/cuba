@@ -53,7 +53,7 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
         List<MetaClassRepresentation> classes = new ArrayList<>();
         List<TemplateHashModel> enums = new ArrayList<>();
-        HashSet<String> addedEnums = new HashSet<>();
+        Set<String> addedEnums = new HashSet<>();
 
         Set<MetaClass> metas = new HashSet<>(metadataTools.getAllPersistentMetaClasses());
         metas.addAll(metadataTools.getAllEmbeddableMetaClasses());
@@ -75,7 +75,12 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
             for (MetaClassRepresentation.MetaClassRepProperty metaProperty : rep.getProperties()) {
                 TemplateHashModel enumValues = metaProperty.getEnumValues();
-                if (enumValues != null) addEnumIfNotContains(addedEnums, enums, enumValues);
+                if (enumValues != null){
+                    if(!addedEnums.contains(metaProperty.getJavaType())){
+                        addedEnums.add(metaProperty.getJavaType());
+                        enums.add(enumValues);
+                    }
+                }
             }
 
         }
@@ -107,21 +112,6 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
         String template = resources.getResourceAsString("/com/haulmont/cuba/core/app/domain/DomainDescription.ftl");
         return TemplateHelper.processTemplate(template, values);
-    }
-
-    protected void addEnumIfNotContains(HashSet<String> addedEnums, List<TemplateHashModel> enums, TemplateHashModel model) {
-        try {
-            String enumClass = model.get("name").toString();
-            if (addedEnums.contains(enumClass)) {
-                return;
-            } else {
-                addedEnums.add(enumClass);
-            }
-        } catch (TemplateModelException e) {
-            throw new IllegalArgumentException("Can not get TemplateModel by name");
-        }
-
-        enums.add(model);
     }
 
     private boolean readPermitted(MetaClass metaClass) {
