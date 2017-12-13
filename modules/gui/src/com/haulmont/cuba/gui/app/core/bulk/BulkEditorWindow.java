@@ -422,9 +422,30 @@ public class BulkEditorWindow extends AbstractWindow {
         return security.isEntityAttrPermitted(metaClass, metaProperty.getName(), EntityAttrAccess.MODIFY);
     }
 
-    protected boolean isDynamicAttributePermitted(MetaClass metaClass, MetaProperty metaProperty) {
-        return security.isEntityAttrPermitted(metaClass, metaProperty.getName(), EntityAttrAccess.MODIFY) &&
-                !(excludeRegex != null && excludeRegex.matcher(metaProperty.getName()).matches());
+    protected boolean isRangeClassPermitted(MetaProperty metaProperty) {
+        if (metaProperty.getRange().isClass()) {
+            MetaClass propertyMetaClass = metaProperty.getRange().asClass();
+            if (metadataTools.isSystemLevel(propertyMetaClass)) {
+                return false;
+            }
+
+            if (!security.isEntityOpPermitted(propertyMetaClass, EntityOp.READ)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected boolean isManagedDynamicAttribute(MetaClass metaClass, MetaProperty metaProperty) {
+        if (!security.isEntityAttrPermitted(metaClass, metaProperty.getName(), EntityAttrAccess.MODIFY)) {
+            return false;
+        }
+
+        if (!isRangeClassPermitted(metaProperty)) {
+            return false;
+        }
+
+        return !(excludeRegex != null && excludeRegex.matcher(metaProperty.getName()).matches());
     }
 
     protected boolean isManagedAttribute(MetaClass metaClass, MetaProperty metaProperty) {
@@ -440,15 +461,8 @@ public class BulkEditorWindow extends AbstractWindow {
             return false;
         }
 
-        if (metaProperty.getRange().isClass()) {
-            MetaClass propertyMetaClass = metaProperty.getRange().asClass();
-            if (metadataTools.isSystemLevel(propertyMetaClass)) {
-                return false;
-            }
-
-            if (!security.isEntityOpPermitted(propertyMetaClass, EntityOp.READ)) {
-                return false;
-            }
+        if (!isRangeClassPermitted(metaProperty)) {
+            return false;
         }
 
         return !(excludeRegex != null && excludeRegex.matcher(metaProperty.getName()).matches());
@@ -481,7 +495,7 @@ public class BulkEditorWindow extends AbstractWindow {
                     MetaPropertyPath metaPropertyPath = DynamicAttributesUtils.getMetaPropertyPath(metaClass, attribute);
                     String propertyCaption = attribute.getLocaleName();
 
-                    if (isDynamicAttributePermitted(metaClass, metaPropertyPath.getMetaProperty())) {
+                    if (isManagedDynamicAttribute(metaClass, metaPropertyPath.getMetaProperty())) {
                         managedFields.add(new ManagedField(metaPropertyPath.getMetaProperty().getName(), metaPropertyPath.getMetaProperty(),
                                 propertyCaption, null));
                     }
