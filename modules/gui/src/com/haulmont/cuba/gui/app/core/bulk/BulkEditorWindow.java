@@ -22,6 +22,7 @@ import com.haulmont.chile.core.model.MetaProperty;
 import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.app.dynamicattributes.DynamicAttributes;
 import com.haulmont.cuba.core.app.dynamicattributes.DynamicAttributesUtils;
+import com.haulmont.cuba.core.entity.BaseGenericIdEntity;
 import com.haulmont.cuba.core.entity.CategoryAttribute;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.*;
@@ -159,6 +160,9 @@ public class BulkEditorWindow extends AbstractWindow {
         createNestedEmbeddedDatasources(datasource, metaClass, "");
 
         Entity instance = metadata.create(metaClass);
+        if (loadDynamicAttributes && (instance instanceof BaseGenericIdEntity)) {
+            ((BaseGenericIdEntity) instance).setDynamicAttributes(new HashMap<>());
+        }
         createEmbeddedFields(metaClass, instance, "");
 
         datasource.setItem(instance);
@@ -408,6 +412,11 @@ public class BulkEditorWindow extends AbstractWindow {
         return security.isEntityAttrPermitted(metaClass, metaProperty.getName(), EntityAttrAccess.MODIFY);
     }
 
+    protected boolean isDynamicAttributePermitted(MetaClass metaClass, MetaProperty metaProperty) {
+        return security.isEntityAttrPermitted(metaClass, metaProperty.getName(), EntityAttrAccess.MODIFY) &&
+                !(excludeRegex != null && excludeRegex.matcher(metaProperty.getName()).matches());
+    }
+
     protected boolean isManagedAttribute(MetaClass metaClass, MetaProperty metaProperty) {
         if (metadataTools.isSystem(metaProperty)
                 || metadataTools.isNotPersistent(metaProperty)
@@ -462,7 +471,7 @@ public class BulkEditorWindow extends AbstractWindow {
                     MetaPropertyPath metaPropertyPath = DynamicAttributesUtils.getMetaPropertyPath(metaClass, attribute);
                     String propertyCaption = attribute.getLocaleName();
 
-                    if (isPermitted(metaClass, metaPropertyPath.getMetaProperty())) {
+                    if (isDynamicAttributePermitted(metaClass, metaPropertyPath.getMetaProperty())) {
                         managedFields.add(new ManagedField(metaPropertyPath.getMetaProperty().getName(), metaPropertyPath.getMetaProperty(),
                                 propertyCaption, null));
                     }
