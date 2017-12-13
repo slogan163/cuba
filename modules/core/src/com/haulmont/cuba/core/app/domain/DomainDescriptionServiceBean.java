@@ -75,8 +75,8 @@ public class DomainDescriptionServiceBean implements DomainDescriptionService {
 
             for (MetaClassRepresentation.MetaClassRepProperty metaProperty : rep.getProperties()) {
                 TemplateHashModel enumValues = metaProperty.getEnumValues();
-                if (enumValues != null){
-                    if(!addedEnums.contains(metaProperty.getJavaType())){
+                if (enumValues != null) {
+                    if (!addedEnums.contains(metaProperty.getJavaType())) {
                         addedEnums.add(metaProperty.getJavaType());
                         enums.add(enumValues);
                     }
