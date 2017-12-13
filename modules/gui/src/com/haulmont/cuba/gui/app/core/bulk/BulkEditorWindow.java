@@ -232,7 +232,11 @@ public class BulkEditorWindow extends AbstractWindow {
                         public void actionPerform(Component component) {
                             editField.setEnabled(!editField.isEnabled());
                             if (!editField.isEnabled()) {
-                                editField.setValue(null);
+                                if (editField instanceof ListEditor) {
+                                    editField.setValue(Collections.EMPTY_LIST);
+                                } else {
+                                    editField.setValue(null);
+                                }
                                 setIcon("icons/edit.png");
                                 clearButton.setDescription(getMessage("bulk.editAttribute"));
                             } else {
@@ -251,7 +255,13 @@ public class BulkEditorWindow extends AbstractWindow {
                 }
 
                 editField.setRequired(false);
-                editField.setValue(null);
+
+                if (editField instanceof ListEditor) {
+                    editField.setValue(Collections.EMPTY_LIST);
+                } else {
+                    editField.setValue(null);
+                }
+
                 if (fieldValidators != null) {
                     Field.Validator validator = fieldValidators.get(field.getFqn());
                     if (validator != null) {
