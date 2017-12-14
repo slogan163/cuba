@@ -554,9 +554,23 @@ public class BulkEditorWindow extends AbstractWindow {
     private boolean hasChanges() {
         for (Map.Entry<String, Field> fieldEntry : dataFields.entrySet()) {
             Field field = fieldEntry.getValue();
-            if (field.getValue() != null || !field.isEnabled()) {
+            if (isFieldChanged(field)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    protected boolean isFieldChanged(Field field) {
+        if (field instanceof ListEditor) {
+            List list = field.getValue();
+            if (list.isEmpty() && !field.isEnabled()) {
+                return true;
+            } else if (!list.isEmpty()) {
+                return true;
+            }
+        } else if (field.getValue() != null || !field.isEnabled()) {
+            return true;
         }
         return false;
     }
@@ -578,7 +592,7 @@ public class BulkEditorWindow extends AbstractWindow {
                 List<String> fields = new ArrayList<>();
                 for (Map.Entry<String, Field> fieldEntry : dataFields.entrySet()) {
                     Field field = fieldEntry.getValue();
-                    if (field.getValue() != null || !field.isEnabled()) {
+                    if (isFieldChanged(field)) {
                         String localizedName = managedFields.get(fieldEntry.getKey()).getLocalizedName();
                         fields.add("- " + localizedName);
                     }
