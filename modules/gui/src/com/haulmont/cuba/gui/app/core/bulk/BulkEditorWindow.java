@@ -562,14 +562,13 @@ public class BulkEditorWindow extends AbstractWindow {
     }
 
     protected boolean isFieldChanged(Field field) {
+        if (!field.isEnabled()) {
+            return true;
+        }
+
         if (field instanceof ListEditor) {
-            List list = field.getValue();
-            if (list.isEmpty() && !field.isEnabled()) {
-                return true;
-            } else if (!list.isEmpty()) {
-                return true;
-            }
-        } else if (field.getValue() != null || !field.isEnabled()) {
+            return !((Collection) field.getValue()).isEmpty();
+        } else if (field.getValue() != null) {
             return true;
         }
         return false;
@@ -646,20 +645,8 @@ public class BulkEditorWindow extends AbstractWindow {
         List<String> fields = new ArrayList<>();
         for (Map.Entry<String, Field> fieldEntry : dataFields.entrySet()) {
             Field field = fieldEntry.getValue();
-            if (field.getValue() != null || !field.isEnabled()) {
+            if (isFieldChanged(field)) {
                 fields.add(managedFields.get(fieldEntry.getKey()).getFqn());
-            }
-        }
-
-        for (Map.Entry<String, Field> fieldEntry : dataFields.entrySet()) {
-            Field field = fieldEntry.getValue();
-            if (!field.isEnabled()) {
-                for (Entity item : items) {
-                    ensureEmbeddedPropertyCreated(item, fieldEntry.getKey());
-
-                    item.setValueEx(fieldEntry.getKey(), null);
-                }
-            } else if (field.getValue() != null) {
                 for (Entity item : items) {
                     ensureEmbeddedPropertyCreated(item, fieldEntry.getKey());
 
