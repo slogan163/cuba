@@ -645,8 +645,13 @@ public class BulkEditorWindow extends AbstractWindow {
         List<String> fields = new ArrayList<>();
         for (Map.Entry<String, Field> fieldEntry : dataFields.entrySet()) {
             Field field = fieldEntry.getValue();
-            if (isFieldChanged(field)) {
-                fields.add(managedFields.get(fieldEntry.getKey()).getFqn());
+            if (!field.isEnabled()) {
+                for (Entity item : items) {
+                    ensureEmbeddedPropertyCreated(item, fieldEntry.getKey());
+
+                    item.setValueEx(fieldEntry.getKey(), null);
+                }
+            } else if (isFieldChanged(field)) {
                 for (Entity item : items) {
                     ensureEmbeddedPropertyCreated(item, fieldEntry.getKey());
 
