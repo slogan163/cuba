@@ -164,7 +164,7 @@ public final class LocaleHelper {
             localeProperties = new Properties();
             localeProperties.load(reader);
         } catch (IOException e) {
-            log.debug(String.format("Unable to load properties: %s", localeBundle), e);
+            log.debug("Unable to load properties: {}", localeBundle, e);
         }
         return localeProperties;
     }
