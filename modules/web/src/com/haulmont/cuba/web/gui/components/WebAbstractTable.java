@@ -28,6 +28,7 @@ import com.haulmont.cuba.client.ClientConfig;
 import com.haulmont.cuba.core.app.dynamicattributes.DynamicAttributesUtils;
 import com.haulmont.cuba.core.entity.CategoryAttribute;
 import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.core.entity.LocaleHelper;
 import com.haulmont.cuba.core.entity.SoftDelete;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.gui.ComponentsHelper;
@@ -1113,23 +1114,30 @@ public abstract class WebAbstractTable<T extends com.vaadin.ui.Table & CubaEnhan
     }
 
     protected String getColumnCaption(Object columnId, Column column) {
-        String caption = StringUtils.capitalize(column.getCaption() != null ? column.getCaption() : getColumnCaption(columnId));
+        String caption = column.getCaption();
 
-        if (columnId instanceof MetaPropertyPath) {
-            MetaPropertyPath mpp = (MetaPropertyPath) columnId;
-            MetaProperty metaProperty = mpp.getMetaProperty();
-
-            if (DynamicAttributesUtils.isDynamicAttribute(metaProperty)) {
-                CategoryAttribute categoryAttribute = DynamicAttributesUtils.getCategoryAttribute(metaProperty);
-
-                caption = column.getCaption() != null ? column.getCaption() : categoryAttribute.getLocaleName();
-                if (categoryAttribute.getLocaleName().equals(categoryAttribute.getName())) { // if caption from xml or just name of dynamic attribute
-                    caption = StringUtils.capitalize(caption);
-                } else {  // if locale name exist
-                    caption = categoryAttribute.getLocaleName();
-                }
-            }
+        if (caption != null) {
+            return caption;
         }
+
+        if (!(columnId instanceof MetaPropertyPath)) {
+            return StringUtils.capitalize(getColumnCaption(columnId));
+        }
+
+        MetaPropertyPath mpp = (MetaPropertyPath) columnId;
+        MetaProperty metaProperty = mpp.getMetaProperty();
+
+        if (DynamicAttributesUtils.isDynamicAttribute(metaProperty)) {
+            CategoryAttribute categoryAttribute = DynamicAttributesUtils.getCategoryAttribute(metaProperty);
+            if (LocaleHelper.isLocalizedValueDefined(categoryAttribute.getLocaleNames())) {
+                return categoryAttribute.getLocaleName();
+            }
+
+            caption = StringUtils.capitalize(categoryAttribute.getName());
+        } else {
+            caption = StringUtils.capitalize(getColumnCaption(columnId));
+        }
+
         return caption;
     }
 
