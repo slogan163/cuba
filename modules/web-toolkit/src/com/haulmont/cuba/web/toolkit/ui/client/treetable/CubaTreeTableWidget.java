@@ -352,6 +352,11 @@ public class CubaTreeTableWidget extends VTreeTable implements TableWidget {
         }
 
         @Override
+        protected boolean shouldRefreshContentWidths() {
+            return true;
+        }
+
+        @Override
         public void onBrowserEvent(Event event) {
             super.onBrowserEvent(event);
 
