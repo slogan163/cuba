@@ -352,11 +352,6 @@ public class CubaTreeTableWidget extends VTreeTable implements TableWidget {
         }
 
         @Override
-        protected boolean shouldRefreshContentWidths() {
-            return true;
-        }
-
-        @Override
         public void onBrowserEvent(Event event) {
             super.onBrowserEvent(event);
 
@@ -826,6 +821,15 @@ public class CubaTreeTableWidget extends VTreeTable implements TableWidget {
             } catch (Exception e) {
                 VConsole.error("Unable to init cuba-ids for columns " + e.getMessage());
             }
+        }
+    }
+
+    public void updateTableBodyScroll() {
+        if (willHaveScrollbars()) {
+            scrollBodyPanel.getElement().getStyle().clearOverflowY();
+        } else {
+            scrollBodyPanel.getElement().getStyle()
+                    .setOverflowY(Style.Overflow.HIDDEN);
         }
     }
 }
