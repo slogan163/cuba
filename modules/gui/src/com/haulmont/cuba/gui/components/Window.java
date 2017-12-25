@@ -229,6 +229,9 @@ public interface Window extends Frame, Component.HasCaption, Component.HasIcon {
 
     /**
      * Sets how the managed main TabSheet switches a tab with this window: hides or unloads its content.
+     * <p>
+     * Please notice that a method invocation will take an effect only if {@code cuba.web.mainTabSheetMode} property
+     * is set to 'MANAGED'.
      *
      * @param mode one of the {@link ContentSwitchMode} enum values
      */
